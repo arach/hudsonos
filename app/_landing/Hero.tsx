@@ -68,13 +68,13 @@ export function Hero() {
 
             <div className="flex items-center gap-4">
               <Link
-                href="https://github.com/arach/hudson"
+                href="/releases"
                 className="btn-primary font-mono"
               >
                 Get Started
               </Link>
               <Link
-                href="https://github.com/arach/hudson/tree/main/docs"
+                href="https://docs.hudsonos.com"
                 className="btn-secondary font-mono"
               >
                 Read the Docs

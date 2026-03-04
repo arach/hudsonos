@@ -17,13 +17,13 @@ export function Footer() {
             GitHub
           </Link>
           <Link
-            href="https://github.com/arach/hudson/tree/main/docs"
+            href="https://docs.hudsonos.com"
             className="text-neutral-600 hover:text-neutral-400 transition-colors"
           >
             Docs
           </Link>
           <Link
-            href="https://github.com/arach/hudsonos/releases"
+            href="/releases"
             className="text-neutral-600 hover:text-neutral-400 transition-colors"
           >
             Releases

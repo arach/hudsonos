@@ -11,16 +11,22 @@ export function NavHeader() {
       </Link>
       <nav className="flex items-center gap-5">
         <Link
-          href="https://github.com/arach/hudson/tree/main/docs"
+          href="https://docs.hudsonos.com"
           className="text-xs font-mono tracking-widest text-neutral-400 hover:text-neutral-200 transition-colors uppercase"
         >
           Docs
         </Link>
         <Link
-          href="https://github.com/arach/hudsonos/releases"
+          href="/releases"
           className="text-xs font-mono tracking-widest text-neutral-400 hover:text-neutral-200 transition-colors uppercase"
         >
           Download
+        </Link>
+        <Link
+          href="/demo"
+          className="text-xs font-mono tracking-widest text-neutral-400 hover:text-neutral-200 transition-colors uppercase"
+        >
+          Demo
         </Link>
         <Link
           href="https://github.com/arach/hudson"
