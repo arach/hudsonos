@@ -5,7 +5,7 @@ export function NavHeader() {
     <header className="h-12 shrink-0 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur-xl flex items-center justify-between px-5 sticky top-0 z-50">
       <Link
         href="/"
-        className="text-xs font-mono font-bold tracking-widest text-neutral-200 uppercase"
+        className="text-sm font-mono font-bold tracking-widest text-white uppercase"
       >
         Hudson
       </Link>
