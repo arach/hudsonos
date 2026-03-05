@@ -83,6 +83,12 @@ export function Hero() {
               >
                 Download App
               </Link>
+              <Link
+                href="https://app.hudsonos.com/docs"
+                className="text-xs font-mono text-neutral-500 hover:text-neutral-300 transition-colors"
+              >
+                Read the Docs &rarr;
+              </Link>
             </div>
           </div>
         </div>
