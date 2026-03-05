@@ -72,7 +72,7 @@ export function Hero() {
 
             <div className="flex items-center gap-4">
               <Link
-                href="/demo"
+                href="https://app.hudsonos.com/demo"
                 className="btn-primary font-mono"
               >
                 See the Demo

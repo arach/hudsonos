@@ -23,7 +23,7 @@ export function NavHeader() {
           Download
         </Link>
         <Link
-          href="/demo"
+          href="https://app.hudsonos.com/demo"
           className="text-xs font-mono tracking-widest text-neutral-400 hover:text-neutral-200 transition-colors uppercase"
         >
           Demo
