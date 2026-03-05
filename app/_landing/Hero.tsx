@@ -60,24 +60,28 @@ export function Hero() {
               Multi-app canvas workspace for React
             </p>
 
-            <p className="text-[15px] text-neutral-500 font-mono leading-relaxed mb-8">
+            <p className="text-[15px] text-neutral-500 font-mono leading-relaxed mb-4">
               Build apps with Provider&nbsp;+&nbsp;Slots&nbsp;+&nbsp;Hooks.
               Compose them into spatial workspaces with pan, zoom, and
               windowing&nbsp;&mdash; all for free.
             </p>
 
+            <p className="text-[13px] text-neutral-600 font-mono leading-relaxed mb-8">
+              Available as a desktop app for macOS.
+            </p>
+
             <div className="flex items-center gap-4">
               <Link
-                href="/releases"
+                href="/demo"
                 className="btn-primary font-mono"
               >
-                Get Started
+                See the Demo
               </Link>
               <Link
-                href="https://docs.hudsonos.com"
+                href="/releases"
                 className="btn-secondary font-mono"
               >
-                Read the Docs
+                Download App
               </Link>
             </div>
           </div>

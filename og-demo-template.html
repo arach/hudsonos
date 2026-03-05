@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @font-face {
+    font-family: 'AstroMono';
+    src: url('file:///Users/arach/dev/hudsonos/public/fonts/AstroMono-Bold.ttf') format('truetype');
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: 'AstroMono';
+    src: url('file:///Users/arach/dev/hudsonos/public/fonts/AstroMono-Regular.ttf') format('truetype');
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'GeistMono';
+    src: url('file:///Users/arach/dev/hudsonos/public/fonts/GeistMono-Regular.ttf') format('truetype');
+    font-weight: 400;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1200px;
+    height: 630px;
+    background: #0a0a0a;
+    color: #e5e5e5;
+    font-family: 'AstroMono', monospace;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(16,185,129,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(16,185,129,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    top: -200px;
+    right: -100px;
+    background: radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .glow-2 {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    bottom: -150px;
+    left: -50px;
+    background: radial-gradient(circle, rgba(16,185,129,0.04) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 80px;
+    width: 100%;
+  }
+
+  .wordmark {
+    font-family: 'AstroMono', monospace;
+    font-weight: 700;
+    font-size: 72px;
+    letter-spacing: 0.25em;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .accent-bar {
+    width: 40px;
+    height: 2px;
+    background: #10b981;
+    margin-bottom: 20px;
+    box-shadow: 0 0 8px rgba(16,185,129,0.4);
+  }
+
+  .page-title {
+    font-family: 'GeistMono', monospace;
+    font-weight: 400;
+    font-size: 36px;
+    letter-spacing: 0.08em;
+    color: #a3a3a3;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .subtitle {
+    font-family: 'GeistMono', monospace;
+    font-size: 18px;
+    color: #525252;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+    max-width: 550px;
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 50px;
+    left: 80px;
+    right: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #10b981;
+  }
+
+  .brand-name {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #a3a3a3;
+  }
+
+  .url {
+    font-family: 'GeistMono', monospace;
+    font-size: 13px;
+    color: #525252;
+    letter-spacing: 0.05em;
+  }
+
+  .accent-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #10b981 30%, #0d9488 70%, transparent);
+  }
+
+  .dots {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    display: flex;
+    gap: 8px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+</style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="glow"></div>
+  <div class="glow-2"></div>
+  <div class="accent-line"></div>
+  <div class="dots">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+
+  <div class="content">
+    <div class="wordmark">HUDSON</div>
+    <div class="accent-bar"></div>
+    <div class="page-title">{{pageTitle}}</div>
+    <div class="subtitle">{{subtitle}}</div>
+  </div>
+
+  <div class="footer">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div class="brand-name">Hudson</div>
+    </div>
+    <div class="url">hudsonos.com/demo</div>
+  </div>
+</body>
+</html>

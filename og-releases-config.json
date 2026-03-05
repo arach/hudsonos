@@ -1,0 +1,11 @@
+{
+  "title": "Releases",
+  "template": "og-template.html",
+  "output": "public/og-releases.png",
+  "vars": {
+    "tag": "Downloads",
+    "title": "Releases",
+    "titleSize": "72px",
+    "subtitle": "Download the latest version of Hudson. Code-signed and notarized by Apple."
+  }
+}

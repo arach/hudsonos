@@ -1,0 +1,11 @@
+{
+  "title": "HUDSON",
+  "template": "og-template.html",
+  "output": "public/og.png",
+  "vars": {
+    "tag": "Multi-App Canvas Workspace",
+    "title": "HUDSON",
+    "titleSize": "88px",
+    "subtitle": "Build apps with Provider + Slots + Hooks. Compose them into spatial workspaces."
+  }
+}

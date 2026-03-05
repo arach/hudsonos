@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "og": "npx @arach/og og-template.html -o public/og.png --var 'tag=Multi-App Canvas Workspace' --var 'title=HUDSON' --var 'titleSize=88px' --var 'subtitle=Build apps with Provider + Slots + Hooks. Compose them into spatial workspaces.' && npx @arach/og og-releases-template.html -o public/og-releases.png --var 'pageTitle=Releases' --var 'subtitle=Download the latest version. Code-signed and notarized by Apple.' && npx @arach/og og-demo-template.html -o public/og-demo.png --var 'pageTitle=Demo' --var 'subtitle=See Hudson in action. A multi-app canvas workspace for React.'"
   },
   "dependencies": {
     "lucide-react": "^0.574.0",
