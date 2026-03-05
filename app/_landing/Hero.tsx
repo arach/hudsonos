@@ -78,16 +78,16 @@ export function Hero() {
                 See the Demo
               </Link>
               <Link
-                href="/releases"
+                href="https://app.hudsonos.com/docs"
                 className="btn-secondary font-mono"
               >
-                Download App
+                Read the Docs
               </Link>
               <Link
-                href="https://app.hudsonos.com/docs"
+                href="/releases"
                 className="text-xs font-mono text-neutral-500 hover:text-neutral-300 transition-colors"
               >
-                Read the Docs &rarr;
+                Download &rarr;
               </Link>
             </div>
           </div>
