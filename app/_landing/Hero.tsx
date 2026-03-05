@@ -57,7 +57,7 @@ export function Hero() {
             </div>
 
             <p className="text-xl text-neutral-400 font-mono mb-3">
-              Multi-app canvas workspace for React
+              Multi-app canvas workspace for AI apps
             </p>
 
             <p className="text-[15px] text-neutral-500 font-mono leading-relaxed mb-4">

@@ -20,11 +20,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hudsonos.com"),
-  title: "Hudson — Multi-app canvas workspace for React",
+  title: "Hudson — Multi-app canvas workspace for AI apps",
   description:
     "Build apps with Provider + Slots + Hooks. Compose them into spatial workspaces with pan, zoom, and windowing.",
   openGraph: {
-    title: "Hudson — Multi-app canvas workspace for React",
+    title: "Hudson — Multi-app canvas workspace for AI apps",
     description:
       "Build apps with Provider + Slots + Hooks. Compose them into spatial workspaces with pan, zoom, and windowing.",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hudson — Multi-app canvas workspace for React",
+    title: "Hudson — Multi-app canvas workspace for AI apps",
     description:
       "Build apps with Provider + Slots + Hooks. Compose them into spatial workspaces with pan, zoom, and windowing.",
     images: ["/og.png"],

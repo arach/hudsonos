@@ -13,7 +13,7 @@ export default function DemoPage() {
           See Hudson in Action
         </h1>
         <p className="text-sm text-neutral-500 font-mono mb-12">
-          A multi-app canvas workspace for React — pan, zoom, and window your
+          A multi-app canvas workspace for AI apps — pan, zoom, and window your
           apps in a unified spatial environment.
         </p>
 

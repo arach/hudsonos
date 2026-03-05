@@ -11,7 +11,7 @@ import { LandingGlyphWaves } from './_landing/LandingGlyphWaves';
 import './_landing/landing.css';
 
 export const metadata: Metadata = {
-  title: 'Hudson — Multi-app canvas workspace for React',
+  title: 'Hudson — Multi-app canvas workspace for AI apps',
   description:
     'Build apps with Provider + Slots + Hooks. Compose them into spatial workspaces with pan, zoom, and windowing.',
 };
