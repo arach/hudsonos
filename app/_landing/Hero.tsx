@@ -37,7 +37,7 @@ export function Hero() {
             />
 
             <span className="inline-flex self-start items-center px-3 py-1 rounded-full border border-emerald-500/30 text-[10px] font-mono tracking-[0.2em] text-emerald-400 uppercase mb-8">
-              Invite-Only Preview
+              Preview
             </span>
 
             <h1 className="text-[64px] lg:text-[80px] font-mono font-bold tracking-[0.3em] text-white leading-none mb-5">
