@@ -1,0 +1,38 @@
+// @hudsonos/sdk — public API for Hudson app developers.
+
+// Types
+export type { HudsonApp, AppTool, StatusColor, SearchConfig, AppManifest, AppSettingField, AppSettingsSection, AppSettingsConfig } from './types/app';
+export type { HudsonWorkspace, WorkspaceAppConfig, CanvasParticipation } from './types/workspace';
+export type { AppIntent, IntentCategory, IntentParameter, CatalogAppEntry, IntentCatalog } from './types/intent';
+export type { ServiceDefinition, ServiceDependency, ServiceRecord, ServiceAction, ServiceStatus } from './types/service';
+export type { AppOutput, AppInput, AppPorts, PipeDefinition } from './types/port';
+export type { CommandOption, ContextMenuEntry, ContextMenuAction, ContextMenuSeparator, ContextMenuGroup } from './types/overlays';
+
+// Hooks
+export { usePersistentState } from './hooks/usePersistentState';
+export { useAppSettings } from './hooks/useAppSettings';
+export type { AppSettingsValues } from './hooks/useAppSettings';
+export { useTerminalRelay } from './hooks/useTerminalRelay';
+export type { TerminalRelayHandle, UseTerminalRelayOptions, RelayStatus } from './hooks/useTerminalRelay';
+
+// AI types (runtime ships separately as @hudsonos/ai)
+export type { HudsonAIChat, UseHudsonAIOptions, AIAttachment } from './types/ai';
+
+// Utilities
+export * from './lib/sounds';
+export { logEvent, FRAME_LOG_EVENT } from './lib/logger';
+export type { FrameLogEntry } from './lib/logger';
+export { worldToScreen, screenToWorld } from './lib/viewport';
+
+// Manifest
+export { deriveManifest } from './lib/manifest';
+
+// Theme
+export { SHELL_THEME } from './lib/theme';
+
+// Platform adapter
+export type { PlatformAdapter, PlatformLayout } from './platform';
+export { WEB_ADAPTER, PlatformProvider, usePlatform, usePlatformLayout } from './platform';
+
+// Reusable widget
+export { default as ZoomControls } from './components/ZoomControls';

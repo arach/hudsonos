@@ -1,0 +1,53 @@
+{
+  "name": "@hudsonos/sdk",
+  "version": "0.1.0",
+  "description": "SDK for building Hudson apps — types, hooks, and utilities",
+  "type": "module",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup && cp src/styles/frame.css dist/styles.css",
+    "dev": "tsup --watch",
+    "prepublishOnly": "bun run build"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "lucide-react": ">=0.460.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "tsup": "^8",
+    "typescript": "^5"
+  },
+  "keywords": [
+    "hudson",
+    "sdk",
+    "canvas",
+    "workspace",
+    "react",
+    "ui"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hudsonos/hudson",
+    "directory": "packages/sdk"
+  },
+  "homepage": "https://hudsonos.com",
+  "engines": {
+    "node": ">=18"
+  }
+}
