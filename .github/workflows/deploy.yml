@@ -38,9 +38,9 @@ jobs:
         working-directory: hudson-docs
         run: bun run build
 
-      # Merge outputs: marketing site + docs under /docs
+      # Merge outputs: Astro generates /docs/* pages, copy into Next.js output
       - name: Merge outputs
-        run: cp -r hudson-docs/dist out/docs
+        run: cp -rn hudson-docs/dist/* out/
 
       - uses: actions/configure-pages@v5
 
