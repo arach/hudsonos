@@ -1,28 +1,179 @@
 ---
 import DocsLayout from '../../layouts/DocsLayout.astro'
-import { navGroups } from '../../lib/nav'
 ---
 
 <DocsLayout title="Documentation" headings={[]} rawMarkdown="" agentMarkdown="">
-  <div class="space-y-10">
-    {navGroups.map((group) => (
-      <div>
-        <h2 id={group.id} class="text-xl font-semibold tracking-tight mb-4" style="border: none; margin-top: 0; padding-top: 0;">{group.title}</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px;">
-          {group.items.map((item) => (
-            <a
-              href={item.href}
-              class="group block rounded-lg border border-[var(--color-border)] p-5 text-sm no-underline transition hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface)]"
-            >
-              <span class="font-medium text-[var(--color-text)]">{item.title}</span>
-              <span class="mt-2 flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
-                Read more
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </span>
-            </a>
-          ))}
-        </div>
+  <div class="docs-index">
+    <h1>Hudson Documentation</h1>
+    <p class="docs-index-lead">
+      Hudson is a multi-app canvas workspace for building and composing AI-native applications.
+      Apps are spatial — they live on an infinite canvas with pan, zoom, and windowing built in.
+      You write a React component, Hudson gives it a window.
+    </p>
+
+    <section class="docs-index-section">
+      <h2>Getting Started</h2>
+      <p>
+        Learn what Hudson is, how the architecture works, and build your first app.
+        The core idea is simple: every app is a Provider that exposes slots and hooks.
+        The shell reads from those hooks and renders your UI into windows on a shared canvas.
+      </p>
+      <div class="docs-index-grid">
+        <a href="/docs/overview" class="docs-index-card">
+          <span class="docs-index-card-title">Overview</span>
+          <span class="docs-index-card-desc">What Hudson is and why it exists</span>
+        </a>
+        <a href="/docs/quickstart" class="docs-index-card">
+          <span class="docs-index-card-title">Quickstart</span>
+          <span class="docs-index-card-desc">Get running locally in under 5 minutes</span>
+        </a>
+        <a href="/docs/architecture" class="docs-index-card">
+          <span class="docs-index-card-title">Architecture</span>
+          <span class="docs-index-card-desc">Project structure and design decisions</span>
+        </a>
+        <a href="/docs/building-apps" class="docs-index-card">
+          <span class="docs-index-card-title">Building Apps</span>
+          <span class="docs-index-card-desc">The Provider + Slots + Hooks pattern</span>
+        </a>
+        <a href="/docs/api" class="docs-index-card">
+          <span class="docs-index-card-title">API Reference</span>
+          <span class="docs-index-card-desc">Complete reference for @hudson/sdk</span>
+        </a>
       </div>
-    ))}
+    </section>
+
+    <section class="docs-index-section">
+      <h2>NPM Packages</h2>
+      <p>
+        Hudson ships two packages on npm. The SDK gives you types, hooks, and utilities
+        for building apps that plug into any Hudson workspace. HX is a local service registry
+        and smart router that lets apps discover and talk to each other.
+      </p>
+      <div class="docs-index-grid">
+        <a href="/docs/npm/sdk/getting-started" class="docs-index-card">
+          <span class="docs-index-card-title">@hudsonos/sdk</span>
+          <span class="docs-index-card-desc">Types, hooks, and utilities for app developers</span>
+        </a>
+        <a href="/docs/npm/hx/hx" class="docs-index-card">
+          <span class="docs-index-card-title">@hudsonos/hx</span>
+          <span class="docs-index-card-desc">Service registry and smart router</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="docs-index-section">
+      <h2>CLI Tools</h2>
+      <p>
+        Command-line tools for scaffolding new apps and running local development servers.
+        The scaffolder generates a full app skeleton with the right file structure and types.
+        Relay is a terminal server that bridges shell sessions into the workspace.
+      </p>
+      <div class="docs-index-grid">
+        <a href="/docs/cli/create-hudson-app" class="docs-index-card">
+          <span class="docs-index-card-title">create-hudson-app</span>
+          <span class="docs-index-card-desc">Scaffold a new Hudson app</span>
+        </a>
+        <a href="/docs/cli/relay" class="docs-index-card">
+          <span class="docs-index-card-title">Relay</span>
+          <span class="docs-index-card-desc">Terminal server for workspace integration</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="docs-index-section">
+      <h2>Prompts</h2>
+      <p>
+        Structured prompts you can feed to an AI agent to generate Hudson apps and features.
+        These are tested prompt templates that produce working code following Hudson conventions.
+      </p>
+      <div class="docs-index-grid">
+        <a href="/docs/prompts/create-app" class="docs-index-card">
+          <span class="docs-index-card-title">Create a New App</span>
+          <span class="docs-index-card-desc">Prompt template for generating a full app</span>
+        </a>
+        <a href="/docs/prompts/add-intents" class="docs-index-card">
+          <span class="docs-index-card-title">Add Intents</span>
+          <span class="docs-index-card-desc">Prompt template for adding inter-app intents</span>
+        </a>
+      </div>
+    </section>
   </div>
+
+  <style is:inline>
+    .docs-index h1 {
+      font-family: 'Geist Mono', monospace;
+      font-weight: 400;
+      letter-spacing: 0.025em;
+      font-size: 2rem;
+      color: var(--color-text);
+      margin: 0 0 1rem;
+      line-height: 1.2;
+    }
+
+    .docs-index-lead {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--color-text-muted);
+      margin-bottom: 3rem;
+      max-width: 600px;
+    }
+
+    .docs-index-section {
+      margin-bottom: 3rem;
+    }
+
+    .docs-index-section h2 {
+      font-family: 'Geist Mono', monospace;
+      font-weight: 400;
+      letter-spacing: 0.025em;
+      font-size: 1.25rem;
+      color: var(--color-text);
+      margin: 0 0 0.5rem;
+      padding: 0;
+      border: none;
+    }
+
+    .docs-index-section > p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--color-text-muted);
+      margin-bottom: 1.25rem;
+      max-width: 560px;
+    }
+
+    .docs-index-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+    }
+
+    .docs-index-card {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 16px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      text-decoration: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .docs-index-card:hover {
+      border-color: var(--color-text-muted);
+      background: var(--color-surface);
+    }
+
+    .docs-index-card-title {
+      font-family: 'Geist Mono', monospace;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .docs-index-card-desc {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      line-height: 1.4;
+    }
+  </style>
 </DocsLayout>
