@@ -22,11 +22,25 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
 
-      - name: Install dependencies
+      # Build marketing site (Next.js)
+      - name: Install marketing site dependencies
         run: bun install --frozen-lockfile
 
-      - name: Build
+      - name: Build marketing site
         run: bun run build
+
+      # Build docs site (Astro/Dewey)
+      - name: Install docs dependencies
+        working-directory: hudson-docs
+        run: bun install
+
+      - name: Build docs
+        working-directory: hudson-docs
+        run: bun run build
+
+      # Merge outputs: marketing site + docs under /docs
+      - name: Merge outputs
+        run: cp -r hudson-docs/dist out/docs
 
       - uses: actions/configure-pages@v5
 
