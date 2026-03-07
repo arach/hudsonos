@@ -17,7 +17,7 @@ export function Footer() {
             GitHub
           </Link>
           <Link
-            href="https://app.hudsonos.com/docs"
+            href="/docs"
             className="text-neutral-600 hover:text-neutral-400 transition-colors"
           >
             Docs

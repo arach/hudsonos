@@ -47,7 +47,7 @@ export async function CodePreview() {
         </div>
 
         <Link
-          href="https://app.hudsonos.com/docs/building-apps"
+          href="/docs/building-apps"
           className="inline-block mt-8 text-sm font-mono text-emerald-400 hover:text-emerald-300 transition-colors"
         >
           See the full guide &rarr;

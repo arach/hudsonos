@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { APP_URL } from './env';
 import { HeroScene } from './HeroScene';
 
 export function Hero() {
@@ -72,13 +73,13 @@ export function Hero() {
 
             <div className="flex items-center gap-4">
               <Link
-                href="https://app.hudsonos.com/demo"
+                href={`${APP_URL}/demo`}
                 className="btn-primary font-mono"
               >
                 See the Demo
               </Link>
               <Link
-                href="https://app.hudsonos.com/docs"
+                href="/docs"
                 className="btn-secondary font-mono"
               >
                 Read the Docs

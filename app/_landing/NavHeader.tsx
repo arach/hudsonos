@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { APP_URL } from './env';
 
 export function NavHeader() {
   return (
@@ -11,7 +12,7 @@ export function NavHeader() {
       </Link>
       <nav className="flex items-center gap-5">
         <Link
-          href="https://app.hudsonos.com/docs"
+          href="/docs"
           className="text-xs font-mono tracking-widest text-neutral-400 hover:text-neutral-200 transition-colors uppercase"
         >
           Docs
@@ -23,7 +24,7 @@ export function NavHeader() {
           Download
         </Link>
         <Link
-          href="https://app.hudsonos.com/demo"
+          href={`${APP_URL}/demo`}
           className="text-xs font-mono tracking-widest text-neutral-400 hover:text-neutral-200 transition-colors uppercase"
         >
           Demo
