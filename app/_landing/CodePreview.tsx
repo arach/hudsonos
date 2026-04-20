@@ -35,7 +35,7 @@ export async function CodePreview() {
       <GlyphWavesBg />
 
       <div className="relative max-w-[800px] mx-auto">
-        <h2 className="font-brand text-2xl md:text-3xl font-medium text-white/90 mb-3">
+        <h2 className="text-2xl md:text-3xl font-medium text-white/90 mb-3">
           This is all you need
         </h2>
         <p className="text-[14px] text-white/55 mb-12 leading-relaxed">

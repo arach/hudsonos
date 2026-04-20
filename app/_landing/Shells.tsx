@@ -31,7 +31,7 @@ export function Shells() {
           <div className="text-[11px] uppercase tracking-[0.2em] text-emerald-400/70">
             Two shells, same primitives
           </div>
-          <h2 className="mt-1 font-brand text-2xl md:text-3xl font-medium text-white/90 mb-12">
+          <h2 className="mt-1 text-2xl md:text-3xl font-medium text-white/90 mb-12">
             Pick the chrome that fits.
           </h2>
         </div>

@@ -54,7 +54,7 @@ export function Features() {
   return (
     <section className="py-32 px-8 lg:px-16">
       <div className="max-w-[1080px] mx-auto">
-        <h2 className="font-brand text-2xl md:text-3xl font-medium text-white/90 mb-16">
+        <h2 className="text-2xl md:text-3xl font-medium text-white/90 mb-16">
           Built for builders
         </h2>
 
@@ -81,7 +81,7 @@ function FeatureColumn({
       <div className="text-[11px] uppercase tracking-[0.2em] text-emerald-400/70">
         {eyebrow}
       </div>
-      <h3 className="mt-1 font-brand text-xl md:text-2xl font-medium text-white/90 mb-8">
+      <h3 className="mt-1 text-xl md:text-2xl font-medium text-white/90 mb-8">
         {title}
       </h3>
       <ul className="space-y-6">

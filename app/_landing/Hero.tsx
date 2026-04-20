@@ -23,15 +23,12 @@ export function Hero() {
           &nbsp;+&nbsp;Hooks &mdash; apps own state, the shell renders
           chrome.
         </p>
-        <p className="mt-3 text-[13px] text-white/40">
-          Available as a desktop app for macOS.
-        </p>
         <div className="mt-10 flex flex-wrap items-center gap-3">
           <Link
-            href={`${APP_URL}/demo`}
+            href={`${APP_URL}/app`}
             className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-md border border-emerald-400/40 bg-emerald-400/10 text-emerald-200 hover:bg-emerald-400/20 hover:border-emerald-400/60 transition"
           >
-            See the Demo
+            Open the Workspace
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link
@@ -39,12 +36,6 @@ export function Hero() {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md border border-white/10 bg-white/[0.02] hover:bg-white/5 hover:border-white/20 transition text-white/80"
           >
             Read the Docs
-          </Link>
-          <Link
-            href="/releases"
-            className="ml-2 inline-flex items-center gap-1.5 text-[13px] text-white/50 hover:text-white transition-colors"
-          >
-            Download &rarr;
           </Link>
         </div>
       </div>

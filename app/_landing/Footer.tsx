@@ -11,22 +11,10 @@ export function Footer() {
         </div>
         <nav className="flex items-center gap-5 text-xs font-mono tracking-widest uppercase">
           <Link
-            href="https://github.com/arach/hudson"
-            className="text-neutral-600 hover:text-neutral-400 transition-colors"
-          >
-            GitHub
-          </Link>
-          <Link
             href="/docs"
             className="text-neutral-600 hover:text-neutral-400 transition-colors"
           >
             Docs
-          </Link>
-          <Link
-            href="/releases"
-            className="text-neutral-600 hover:text-neutral-400 transition-colors"
-          >
-            Releases
           </Link>
         </nav>
       </div>

@@ -61,7 +61,7 @@ export function CallToAction() {
       <GlyphWavesBg />
 
       <div className="relative flex flex-col items-center text-center px-6">
-        <h2 className="font-brand text-2xl md:text-3xl font-medium text-white/90 mb-4">
+        <h2 className="text-2xl md:text-3xl font-medium text-white/90 mb-4">
           Stay in the loop
         </h2>
         <p className="text-[14px] text-white/55 mb-8 max-w-[440px] leading-relaxed">

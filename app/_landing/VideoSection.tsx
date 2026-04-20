@@ -13,7 +13,7 @@ export function VideoSection() {
             <div className="text-[11px] uppercase tracking-[0.2em] text-emerald-400/70">
               Live / Interactive
             </div>
-            <h2 className="mt-1 font-brand text-xl md:text-2xl font-medium text-white/90">
+            <h2 className="mt-1 text-xl md:text-2xl font-medium text-white/90">
               The workspace, running inline
             </h2>
           </div>

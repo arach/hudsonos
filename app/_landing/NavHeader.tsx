@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Github } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { APP_URL } from './env';
 
 export function NavHeader() {
@@ -19,23 +19,10 @@ export function NavHeader() {
           Docs
         </Link>
         <Link
-          href="/releases"
-          className="px-3 py-1.5 rounded-md text-white/60 hover:text-white hover:bg-white/5 transition"
-        >
-          Download
-        </Link>
-        <a
-          href="https://github.com/arach/hudson"
-          className="px-3 py-1.5 rounded-md text-white/60 hover:text-white hover:bg-white/5 transition flex items-center gap-1.5"
-        >
-          <Github className="w-3.5 h-3.5" />
-          GitHub
-        </a>
-        <Link
-          href={`${APP_URL}/demo`}
+          href={`${APP_URL}/app`}
           className="ml-2 px-3 py-1.5 rounded-md border border-emerald-400/30 bg-emerald-400/10 text-emerald-300 hover:bg-emerald-400/20 hover:border-emerald-400/50 transition flex items-center gap-1.5"
         >
-          See the Demo
+          Open the Workspace
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </nav>
