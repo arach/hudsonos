@@ -2,7 +2,9 @@ import Link from 'next/link';
 import { ArrowUpRight, Maximize2, MousePointer2 } from 'lucide-react';
 import { APP_URL } from './env';
 
-const PREVIEW_URL = `${APP_URL}/preview`;
+// Same-origin preview — curated, fully self-contained in this repo so the
+// landing has no runtime dependency on app.hudsonos.com.
+const PREVIEW_URL = '/preview';
 
 export function VideoSection() {
   return (
