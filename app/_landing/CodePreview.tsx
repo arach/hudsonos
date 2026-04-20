@@ -35,10 +35,10 @@ export async function CodePreview() {
       <GlyphWavesBg />
 
       <div className="relative max-w-[800px] mx-auto">
-        <h2 className="text-2xl font-mono font-bold tracking-wide text-neutral-100 mb-3">
+        <h2 className="font-brand text-2xl md:text-3xl font-medium text-white/90 mb-3">
           This is all you need
         </h2>
-        <p className="text-sm text-neutral-500 mb-12">
+        <p className="text-[14px] text-white/55 mb-12 leading-relaxed">
           Implement the HudsonApp interface and plug into any workspace
         </p>
 

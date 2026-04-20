@@ -1,30 +1,52 @@
-import { Layers, Puzzle, Terminal, Cable } from 'lucide-react';
-import type { ReactNode } from 'react';
+import {
+  Code2,
+  Layers,
+  LayoutGrid,
+  MousePointer2,
+  PanelsTopLeft,
+  Terminal,
+} from 'lucide-react';
+import type { ComponentType } from 'react';
 
-const features: { icon: ReactNode; title: string; description: string }[] = [
+interface FeatureItem {
+  icon: ComponentType<{ className?: string }>;
+  title: string;
+  body: string;
+}
+
+const PATTERN: FeatureItem[] = [
   {
-    icon: <Layers className="w-4 h-4" />,
-    title: 'Spatial Canvas',
-    description:
-      'Infinite canvas with pan, zoom, snap-to guides, and minimap. Apps float as draggable windows or render natively.',
+    icon: Layers,
+    title: 'Apps own their state',
+    body: 'Each app is a React Provider. The shell nests providers and renders slots.',
   },
   {
-    icon: <Puzzle className="w-4 h-4" />,
-    title: 'Provider + Slots + Hooks',
-    description:
-      'One interface is all you need. Declare a Provider, slot components, and hooks — the shell does everything else.',
+    icon: PanelsTopLeft,
+    title: 'Slots, not prescriptions',
+    body: 'Apps declare what they want in the nav, side panels, overlays. The shell composes.',
   },
   {
-    icon: <Terminal className="w-4 h-4" />,
-    title: 'Command Palette & Terminal',
-    description:
-      'Cmd+K merges every app\'s commands into one palette. Built-in terminal drawer with multi-app tabs.',
+    icon: Code2,
+    title: 'Strict TypeScript interface',
+    body: 'Implement HudsonApp and you get chrome, windows, intents, and AI for free.',
+  },
+];
+
+const PRIMITIVES: FeatureItem[] = [
+  {
+    icon: LayoutGrid,
+    title: 'Canvas workspace',
+    body: 'Pan, zoom, and windowed apps on an infinite plane. Or static panels for dashboards.',
   },
   {
-    icon: <Cable className="w-4 h-4" />,
-    title: 'Extensible Workspaces',
-    description:
-      'Compose apps into workspaces. Canvas mode, panel mode, windowed — all configurable per workspace.',
+    icon: Terminal,
+    title: 'Built-in AI + terminal',
+    body: 'Bottom drawer ships with Hudson AI and an embedded PTY terminal.',
+  },
+  {
+    icon: MousePointer2,
+    title: 'Keyboard-first',
+    body: 'Command palette, focus model, hold-space pan — designed for power users.',
   },
 ];
 
@@ -32,29 +54,53 @@ export function Features() {
   return (
     <section className="py-32 px-8 lg:px-16">
       <div className="max-w-[1080px] mx-auto">
-        <h2 className="text-2xl font-mono font-bold tracking-wide text-neutral-100 mb-16">
+        <h2 className="font-brand text-2xl md:text-3xl font-medium text-white/90 mb-16">
           Built for builders
         </h2>
 
-        <div className="divide-y divide-neutral-800/50">
-          {features.map((f) => (
-            <div
-              key={f.title}
-              className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-3 md:gap-12 py-7 first:pt-0 last:pb-0"
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-emerald-400">{f.icon}</span>
-                <span className="text-sm font-mono font-semibold text-neutral-200 tracking-wide">
-                  {f.title}
-                </span>
-              </div>
-              <p className="text-sm text-neutral-500 leading-relaxed">
-                {f.description}
-              </p>
-            </div>
-          ))}
+        <div className="grid md:grid-cols-2 gap-12 md:gap-16">
+          <FeatureColumn eyebrow="The Pattern" title="Provider + Slots + Hooks" items={PATTERN} />
+          <FeatureColumn eyebrow="The Primitives" title="Canvas · Windows · Chrome" items={PRIMITIVES} />
         </div>
       </div>
     </section>
+  );
+}
+
+function FeatureColumn({
+  eyebrow,
+  title,
+  items,
+}: {
+  eyebrow: string;
+  title: string;
+  items: FeatureItem[];
+}) {
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-[0.2em] text-emerald-400/70">
+        {eyebrow}
+      </div>
+      <h3 className="mt-1 font-brand text-xl md:text-2xl font-medium text-white/90 mb-8">
+        {title}
+      </h3>
+      <ul className="space-y-6">
+        {items.map((it) => (
+          <li key={it.title} className="flex gap-4">
+            <div className="flex-shrink-0 w-9 h-9 rounded-md border border-emerald-500/20 bg-emerald-500/5 flex items-center justify-center">
+              <it.icon className="w-4 h-4 text-emerald-300" />
+            </div>
+            <div>
+              <div className="text-[14px] font-medium text-white/90">
+                {it.title}
+              </div>
+              <p className="mt-1 text-[13px] text-neutral-500 leading-relaxed">
+                {it.body}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

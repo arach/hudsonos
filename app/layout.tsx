@@ -1,21 +1,18 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { Geist_Mono } from "next/font/google";
+import { Geist_Mono, Jura } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-
-const astroMono = localFont({
-  src: [
-    { path: "../public/fonts/AstroMono-Regular.ttf", weight: "400", style: "normal" },
-    { path: "../public/fonts/AstroMono-Bold.ttf", weight: "700", style: "normal" },
-  ],
-  variable: "--font-astro-mono",
-  display: "swap",
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// Brand typeface — Jura. Chosen over Astro Mono (unlicensed) during the Hudson landing rebuild.
+const jura = Jura({
+  variable: "--font-jura",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -45,7 +42,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${jura.variable} ${geistMono.variable}`}
+    >
       <head>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-GSHDZPFRZG"
@@ -58,9 +58,7 @@ export default function RootLayout({
             gtag('config', 'G-GSHDZPFRZG');`}
         </Script>
       </head>
-      <body className={`${astroMono.variable} ${geistMono.variable} antialiased`}>
-        {children}
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

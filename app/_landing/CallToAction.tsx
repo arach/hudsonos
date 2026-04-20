@@ -61,10 +61,10 @@ export function CallToAction() {
       <GlyphWavesBg />
 
       <div className="relative flex flex-col items-center text-center px-6">
-        <h2 className="text-2xl font-mono font-bold tracking-wide text-neutral-100 mb-4">
+        <h2 className="font-brand text-2xl md:text-3xl font-medium text-white/90 mb-4">
           Stay in the loop
         </h2>
-        <p className="text-sm text-neutral-500 font-mono mb-8 max-w-[400px]">
+        <p className="text-[14px] text-white/55 mb-8 max-w-[440px] leading-relaxed">
           Get notified when the Hudson SDK is available for building your own apps.
         </p>
 

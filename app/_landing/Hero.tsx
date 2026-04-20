@@ -1,97 +1,51 @@
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { APP_URL } from './env';
-import { HeroScene } from './HeroScene';
 
 export function Hero() {
   return (
-    <section className="min-h-screen flex items-center relative overflow-hidden">
-      {/* WebGL background scene */}
-      <HeroScene />
-
-      {/* Background glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(ellipse at 30% 50%, rgba(16,185,129,0.03) 0%, transparent 70%)',
-        }}
-      />
-
-      <div className="relative max-w-[1200px] mx-auto w-full px-8 lg:px-16">
-        <div className="flex flex-col justify-center py-24">
-          {/* Metallic plaque wrapping all hero content */}
-          <div
-            className="relative flex flex-col px-10 py-10 rounded-xl max-w-[600px]"
-            style={{
-              background: 'linear-gradient(165deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 40%, rgba(0,0,0,0.1) 100%)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.2), 0 4px 24px rgba(0,0,0,0.4)',
-              backdropFilter: 'blur(12px)',
-            }}
+    <section className="relative px-6 md:px-10 pt-20 pb-14 md:pt-28 md:pb-20">
+      <div className="max-w-5xl mx-auto">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/[0.02] text-[11px] tracking-wider uppercase text-white/50 mb-6">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          Preview · v0.1
+        </div>
+        <h1 className="font-brand text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-white">
+          Build rich, composable,
+          <br />
+          canvas-friendly,
+          <br />
+          <span className="text-emerald-300">AI-powered web apps.</span>
+        </h1>
+        <p className="mt-8 max-w-2xl text-base md:text-lg text-white/60 leading-relaxed">
+          Hudson is a shell and primitives library for composing canvas
+          workspaces and single-app dashboards. Provider&nbsp;+&nbsp;Slots
+          &nbsp;+&nbsp;Hooks &mdash; apps own state, the shell renders
+          chrome.
+        </p>
+        <p className="mt-3 text-[13px] text-white/40">
+          Available as a desktop app for macOS.
+        </p>
+        <div className="mt-10 flex flex-wrap items-center gap-3">
+          <Link
+            href={`${APP_URL}/demo`}
+            className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-md border border-emerald-400/40 bg-emerald-400/10 text-emerald-200 hover:bg-emerald-400/20 hover:border-emerald-400/60 transition"
           >
-            {/* Top edge highlight */}
-            <div
-              className="absolute top-0 left-6 right-6 h-px"
-              style={{
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.1) 70%, transparent)',
-              }}
-            />
-
-            <span className="inline-flex self-start items-center px-3 py-1 rounded-full border border-emerald-500/30 text-[10px] font-mono tracking-[0.2em] text-emerald-400 uppercase mb-8">
-              Preview
-            </span>
-
-            <h1 className="text-[64px] lg:text-[80px] font-mono font-bold tracking-[0.3em] text-white leading-none mb-5">
-              HUDSON
-            </h1>
-
-            {/* Accent line with glow */}
-            <div className="relative mb-6">
-              <div className="w-10 h-px bg-emerald-400/70" />
-              <div
-                className="absolute inset-0 w-10 h-px"
-                style={{
-                  background: 'rgba(16,185,129,0.5)',
-                  filter: 'blur(4px)',
-                }}
-              />
-            </div>
-
-            <p className="text-xl text-neutral-400 font-mono mb-3">
-              Multi-app canvas workspace for AI apps
-            </p>
-
-            <p className="text-[15px] text-neutral-500 font-mono leading-relaxed mb-4">
-              Build apps with Provider&nbsp;+&nbsp;Slots&nbsp;+&nbsp;Hooks.
-              Compose them into spatial workspaces with pan, zoom, and
-              windowing&nbsp;&mdash; all for free.
-            </p>
-
-            <p className="text-[13px] text-neutral-600 font-mono leading-relaxed mb-8">
-              Available as a desktop app for macOS.
-            </p>
-
-            <div className="flex items-center gap-4">
-              <Link
-                href={`${APP_URL}/demo`}
-                className="btn-primary font-mono"
-              >
-                See the Demo
-              </Link>
-              <Link
-                href="/docs"
-                className="btn-secondary font-mono"
-              >
-                Read the Docs
-              </Link>
-              <Link
-                href="/releases"
-                className="text-xs font-mono text-neutral-500 hover:text-neutral-300 transition-colors"
-              >
-                Download &rarr;
-              </Link>
-            </div>
-          </div>
+            See the Demo
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+          <Link
+            href="/docs"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md border border-white/10 bg-white/[0.02] hover:bg-white/5 hover:border-white/20 transition text-white/80"
+          >
+            Read the Docs
+          </Link>
+          <Link
+            href="/releases"
+            className="ml-2 inline-flex items-center gap-1.5 text-[13px] text-white/50 hover:text-white transition-colors"
+          >
+            Download &rarr;
+          </Link>
         </div>
       </div>
     </section>
