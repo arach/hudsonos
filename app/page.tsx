@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { NavHeader } from './_landing/NavHeader';
 import { Hero } from './_landing/Hero';
-import { VideoSection } from './_landing/VideoSection';
+import { PreviewSection } from './_landing/PreviewSection';
 import { Features } from './_landing/Features';
 import { Shells } from './_landing/Shells';
 import { CodePreview } from './_landing/CodePreview';
@@ -25,7 +25,7 @@ export default function LandingPage() {
         <GlyphWavesPageBackground />
         <NavHeader />
         <Hero />
-        <VideoSection />
+        <PreviewSection />
         <Features />
         <Shells />
         <CodePreview />

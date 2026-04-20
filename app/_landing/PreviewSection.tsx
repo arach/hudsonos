@@ -6,7 +6,7 @@ import { APP_URL } from './env';
 // landing has no runtime dependency on app.hudsonos.com.
 const PREVIEW_URL = '/preview';
 
-export function VideoSection() {
+export function PreviewSection() {
   return (
     <section className="relative px-6 md:px-10 pb-20">
       <div className="max-w-6xl mx-auto">
