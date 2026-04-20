@@ -2,9 +2,10 @@ import Link from 'next/link';
 import { ArrowUpRight, Maximize2, MousePointer2 } from 'lucide-react';
 import { APP_URL } from './env';
 
-// Same-origin preview — curated, fully self-contained in this repo so the
-// landing has no runtime dependency on app.hudsonos.com.
-const PREVIEW_URL = '/preview';
+// Preview maps to a stable /preview route on the deployed Hudson app.
+// Cross-origin iframe; we accept the dependency in exchange for showing
+// the real product, not a mock.
+const PREVIEW_URL = `${APP_URL}/preview`;
 
 export function PreviewSection() {
   return (
