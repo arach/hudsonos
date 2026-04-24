@@ -6,11 +6,7 @@ export function Hero() {
   return (
     <section className="relative px-6 md:px-10 pt-20 pb-14 md:pt-28 md:pb-20">
       <div className="max-w-5xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/[0.02] text-[11px] tracking-wider uppercase text-white/50 mb-6">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          Preview · v0.1
-        </div>
-        <h1 className="font-brand text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-white">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl leading-[1.05] tracking-tight text-white">
           Build rich, composable,
           <br />
           canvas-friendly,

@@ -57,7 +57,7 @@ function ShellCard({ name, tagline, body, tag, accent }: ShellCardProps) {
       className={`relative rounded-lg border ${ring} bg-white/[0.02] p-6 transition`}
     >
       <div className="flex items-baseline justify-between">
-        <div className={`font-brand text-lg ${text}`}>{name}</div>
+        <div className={`text-lg ${text}`}>{name}</div>
         <div className="text-[11px] uppercase tracking-wider text-white/40">
           {tag}
         </div>

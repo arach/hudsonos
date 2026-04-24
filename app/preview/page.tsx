@@ -55,7 +55,7 @@ function NavBar() {
     <header className="h-12 shrink-0 flex items-center justify-between px-4 border-b border-white/10 bg-neutral-950/95 backdrop-blur-xl">
       <div className="flex items-center gap-3">
         <HudsonMark className="w-4 h-4 text-emerald-400" />
-        <span className="font-brand text-[13px] tracking-wider">HUDSON</span>
+        <span className="text-[13px] tracking-wider">HUDSON</span>
         <div className="ml-2 px-2 py-0.5 rounded border border-white/10 bg-white/[0.03] text-[10px] uppercase tracking-wider text-white/50">
           Preview
         </div>

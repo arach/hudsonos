@@ -19,6 +19,21 @@ export interface UseTerminalRelayOptions {
   workspaceFiles?: Record<string, string>;
   /** Auto-connect on mount. Defaults to false. */
   autoConnect?: boolean;
+  /** Stable key for persisting the sessionId across reloads and browser restarts.
+   *  If provided, the hook will attempt to reconnect to the previous session on mount. */
+  sessionKey?: string;
+  /** How long (ms) the server keeps the PTY alive after disconnect. Defaults to 30 min. */
+  orphanTTL?: number;
+  /** PTY backend: 'pty' (default) spawns a fresh process, 'tmux' attaches to a persistent tmux session. */
+  backend?: 'pty' | 'tmux';
+  /** For tmux backend: the named tmux session to create/attach to. */
+  tmuxSession?: string;
+  /** CLI agent to spawn. 'claude' (default) or 'pi'. */
+  agent?: 'claude' | 'pi';
+  /** For pi agent: provider name (e.g. 'minimax', 'openai'). */
+  provider?: string;
+  /** For pi agent: model ID (e.g. 'MiniMax-M1'). */
+  model?: string;
 }
 
 export interface TerminalRelayHandle {
@@ -30,6 +45,10 @@ export interface TerminalRelayHandle {
   error: string | null;
   /** Exit code from the last session (null if still running or never started) */
   exitCode: number | null;
+  /** Current working directory (editable before connecting) */
+  cwd: string;
+  /** Update the CWD — only takes effect on next connect/session:init */
+  setCwd: (cwd: string) => void;
   /** Register a callback for incoming terminal data */
   onData: (cb: (data: string) => void) => void;
   /** Send raw keystrokes (for keyboard events) */
@@ -42,6 +61,8 @@ export interface TerminalRelayHandle {
   connect: () => void;
   /** Close the WebSocket connection (session stays alive on server) */
   disconnect: () => void;
+  /** Kill the current session and start a fresh one (new agent/model/settings take effect) */
+  restart: () => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -52,21 +73,44 @@ export function useTerminalRelay(options: UseTerminalRelayOptions = {}): Termina
   const {
     url = 'ws://localhost:3600',
     systemPrompt,
-    cwd,
+    cwd: initialCwd,
     workspaceFiles,
     autoConnect = false,
+    sessionKey,
+    orphanTTL,
+    backend,
+    tmuxSession,
+    agent,
+    provider,
+    model,
   } = options;
+
+  const storageKey = sessionKey ? `hudson.relay.${sessionKey}` : null;
+  const readPersistedSession = () => {
+    if (!storageKey) return null;
+    try { return localStorage.getItem(storageKey); } catch { return null; }
+  };
+  const persistSession = (id: string | null) => {
+    if (!storageKey) return;
+    try {
+      if (id) localStorage.setItem(storageKey, id);
+      else localStorage.removeItem(storageKey);
+    } catch {}
+  };
 
   const [status, setStatus] = useState<RelayStatus>('disconnected');
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [exitCode, setExitCode] = useState<number | null>(null);
+  const [cwd, setCwd] = useState(initialCwd || '~');
 
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dimsRef = useRef({ cols: 80, rows: 24 });
   const initSentRef = useRef(false);
-  const sessionIdRef = useRef<string | null>(null);
+  const cwdRef = useRef(cwd);
+  cwdRef.current = cwd;
+  const sessionIdRef = useRef<string | null>(readPersistedSession());
   const dataCallbackRef = useRef<((data: string) => void) | null>(null);
 
   const send = useCallback((data: Record<string, unknown>) => {
@@ -90,6 +134,24 @@ export function useTerminalRelay(options: UseTerminalRelayOptions = {}): Termina
     setStatus('disconnected');
   }, []);
 
+  const buildInitMessage = useCallback(() => {
+    const activeCwd = cwdRef.current;
+    return {
+      type: 'session:init' as const,
+      cols: dimsRef.current.cols,
+      rows: dimsRef.current.rows,
+      ...(systemPrompt ? { systemPrompt } : {}),
+      ...(activeCwd ? { cwd: activeCwd } : {}),
+      ...(workspaceFiles ? { workspaceFiles } : {}),
+      ...(orphanTTL ? { orphanTTL } : {}),
+      ...(backend ? { backend } : {}),
+      ...(tmuxSession ? { tmuxSession } : {}),
+      ...(agent ? { agent } : {}),
+      ...(provider ? { provider } : {}),
+      ...(model ? { model } : {}),
+    };
+  }, [systemPrompt, workspaceFiles, orphanTTL, backend, tmuxSession, agent, provider, model]);
+
   const sendInitOrReconnect = useCallback(() => {
     if (initSentRef.current) return;
     initSentRef.current = true;
@@ -102,16 +164,9 @@ export function useTerminalRelay(options: UseTerminalRelayOptions = {}): Termina
         rows: dimsRef.current.rows,
       });
     } else {
-      send({
-        type: 'session:init',
-        cols: dimsRef.current.cols,
-        rows: dimsRef.current.rows,
-        ...(systemPrompt ? { systemPrompt } : {}),
-        ...(cwd ? { cwd } : {}),
-        ...(workspaceFiles ? { workspaceFiles } : {}),
-      });
+      send(buildInitMessage());
     }
-  }, [send, systemPrompt, cwd, workspaceFiles]);
+  }, [send, buildInitMessage]);
 
   const connect = useCallback(async () => {
     if (wsRef.current) {
@@ -137,7 +192,6 @@ export function useTerminalRelay(options: UseTerminalRelayOptions = {}): Termina
     wsRef.current = ws;
 
     ws.onopen = () => {
-      setStatus('connected');
       sendInitOrReconnect();
     };
 
@@ -147,24 +201,24 @@ export function useTerminalRelay(options: UseTerminalRelayOptions = {}): Termina
         switch (msg.type) {
           case 'session:ready':
             sessionIdRef.current = msg.sessionId;
+            persistSession(msg.sessionId);
             setSessionId(msg.sessionId);
+            setStatus('connected');
             setError(null);
             setExitCode(null);
             break;
 
-          case 'session:expired':
+          case 'session:expired': {
             sessionIdRef.current = null;
+            persistSession(null);
             initSentRef.current = false;
-            send({
-              type: 'session:init',
-              cols: dimsRef.current.cols,
-              rows: dimsRef.current.rows,
-              ...(systemPrompt ? { systemPrompt } : {}),
-              ...(cwd ? { cwd } : {}),
-              ...(workspaceFiles ? { workspaceFiles } : {}),
-            });
+            if (dataCallbackRef.current) {
+              dataCallbackRef.current('\x1b[2J\x1b[H');
+            }
+            send(buildInitMessage());
             initSentRef.current = true;
             break;
+          }
 
           case 'session:error':
             setStatus('error');
@@ -179,6 +233,7 @@ export function useTerminalRelay(options: UseTerminalRelayOptions = {}): Termina
 
           case 'session:exit':
             sessionIdRef.current = null;
+            persistSession(null);
             setSessionId(null);
             setExitCode(msg.exitCode ?? null);
             if (msg.exitCode !== 0) {
@@ -191,6 +246,7 @@ export function useTerminalRelay(options: UseTerminalRelayOptions = {}): Termina
 
           case 'session:detached':
             sessionIdRef.current = null;
+            persistSession(null);
             setSessionId(null);
             break;
         }
@@ -207,7 +263,7 @@ export function useTerminalRelay(options: UseTerminalRelayOptions = {}): Termina
       setStatus('error');
       setError('Could not connect to relay');
     };
-  }, [url, sendInitOrReconnect, send, systemPrompt, cwd, workspaceFiles]);
+  }, [url, sendInitOrReconnect, send, systemPrompt, workspaceFiles]);
 
   const sendInput = useCallback((data: string) => {
     send({ type: 'terminal:input', data });
@@ -238,16 +294,31 @@ export function useTerminalRelay(options: UseTerminalRelayOptions = {}): Termina
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const restart = useCallback(() => {
+    disconnect();
+    sessionIdRef.current = null;
+    setSessionId(null);
+    if (storageKey) {
+      try { localStorage.removeItem(storageKey); } catch {}
+    }
+    setError(null);
+    setExitCode(null);
+    setTimeout(() => connect(), 200);
+  }, [disconnect, connect, storageKey]);
+
   return {
     status,
     sessionId,
     error,
     exitCode,
+    cwd,
+    setCwd,
     onData,
     sendInput,
     sendLine,
     resize,
     connect,
     disconnect,
+    restart,
   };
 }

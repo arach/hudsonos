@@ -7,7 +7,7 @@ export function NavHeader() {
     <header className="relative z-50 flex items-center justify-between px-6 md:px-10 h-14 border-b border-white/5 bg-neutral-950/80 backdrop-blur-xl sticky top-0">
       <Link href="/" className="flex items-center gap-2">
         <HudsonMark className="w-5 h-5 text-emerald-400" />
-        <span className="font-brand text-[15px] tracking-wider text-white">
+        <span className="text-[15px] tracking-wider text-white">
           HUDSON
         </span>
       </Link>
