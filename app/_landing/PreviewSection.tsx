@@ -1,12 +1,43 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { ArrowUpRight, Maximize2, MousePointer2 } from 'lucide-react';
 import { APP_URL } from './env';
+import { PreviewFallback } from './PreviewFallback';
 
-// Same-origin preview — curated, fully self-contained in this repo so the
-// landing has no runtime dependency on app.hudsonos.com.
-const PREVIEW_URL = '/preview';
+// Preview maps to a stable /preview route on the deployed Hudson app.
+// If that origin isn't reachable (dev without hudson running, or a prod
+// outage), we render a curated mock workspace instead so the landing
+// never shows a broken iframe.
+const PREVIEW_URL = `${APP_URL}/preview`;
+const PROBE_TIMEOUT_MS = 3500;
 
-export function VideoSection() {
+type PreviewState = 'probing' | 'iframe' | 'fallback';
+
+export function PreviewSection() {
+  const [state, setState] = useState<PreviewState>('probing');
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS);
+
+    fetch(PREVIEW_URL, { mode: 'no-cors', signal: controller.signal })
+      .then(() => {
+        clearTimeout(timer);
+        setState('iframe');
+      })
+      .catch(() => {
+        clearTimeout(timer);
+        setState('fallback');
+      });
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, []);
+
   return (
     <section className="relative px-6 md:px-10 pb-20">
       <div className="max-w-6xl mx-auto">
@@ -32,12 +63,15 @@ export function VideoSection() {
         </div>
 
         <HudFrame>
-          <iframe
-            src={PREVIEW_URL}
-            title="Hudson workspace preview"
-            className="block w-full h-[560px] md:h-[640px] border-0 bg-neutral-950"
-            loading="lazy"
-          />
+          {state === 'iframe' ? (
+            <iframe
+              src={PREVIEW_URL}
+              title="Hudson workspace preview"
+              className="block w-full h-[560px] md:h-[640px] border-0 bg-neutral-950"
+            />
+          ) : (
+            <PreviewFallback />
+          )}
         </HudFrame>
 
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-white/40">
