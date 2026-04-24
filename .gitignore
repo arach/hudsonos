@@ -23,3 +23,4 @@ next-env.d.ts
 
 # lock files
 bun.lockb
+.lattices.json
