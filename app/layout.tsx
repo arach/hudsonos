@@ -1,5 +1,15 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Jura } from "next/font/google";
+import {
+  Geist_Mono,
+  Jura,
+  Fraunces,
+  Inter,
+  JetBrains_Mono,
+  Playfair_Display,
+  Cormorant_Garamond,
+  IBM_Plex_Sans,
+  IBM_Plex_Mono,
+} from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
@@ -8,11 +18,56 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Brand typeface — Jura. Chosen over Astro Mono (unlicensed) during the Hudson landing rebuild.
 const jura = Jura({
   variable: "--font-jura",
   subsets: ["latin"],
   display: "swap",
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  display: "swap",
+  axes: ["opsz", "SOFT"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600"],
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600"],
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -44,7 +99,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${jura.variable} ${geistMono.variable}`}
+      className={`${jura.variable} ${geistMono.variable} ${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} ${cormorant.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}
     >
       <head>
         <Script
