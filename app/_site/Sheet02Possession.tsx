@@ -1,3 +1,4 @@
+import { HudsonEmbed } from './lib/embed';
 import { Eyebrow, FooterPlate, Slug, TitleBlock } from './Shared';
 
 const SPEC: Array<[string, string, boolean?]> = [
@@ -63,18 +64,32 @@ export function Sheet02Possession() {
           <div style={{ position: 'relative' }}>
             <div className="embed-plate__caption">
               <span className="live" />
-              EMBED · workspace = self
+              FIG. 02-A · REFERENCE EMBED
               <span style={{ color: 'var(--ink-faint)' }}>·</span>
-              <span>placeholder · wire to /possession</span>
+              <span>surface contract · workspace</span>
             </div>
             <div className="embed-plate" style={{ height: 720 }}>
               <span className="embed-plate__corner embed-plate__corner--tl" />
               <span className="embed-plate__corner embed-plate__corner--tr" />
               <span className="embed-plate__corner embed-plate__corner--bl" />
               <span className="embed-plate__corner embed-plate__corner--br" />
-              <div className="embed-stub">
-                <div className="embed-stub__label">EMBED · POSSESSION MODE</div>
-              </div>
+              <HudsonEmbed
+                src="/embed/workspace"
+                surface="workspace"
+                sizing={{ mode: 'fill' }}
+                density="comfy"
+                workspace="self"
+                template="hudson"
+                consumerId="hudsonos"
+                expects={{
+                  manifestPanel: true,
+                  heroPinned: true,
+                  inspector: true,
+                  buildStrip: true,
+                  legend: true,
+                }}
+                title="Hudson workspace · reference embed"
+              />
             </div>
 
             <div

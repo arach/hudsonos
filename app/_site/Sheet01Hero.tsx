@@ -162,12 +162,13 @@ export function Sheet01Hero() {
             <span className="embed-plate__corner embed-plate__corner--bl" />
             <span className="embed-plate__corner embed-plate__corner--br" />
             <HudsonEmbed
-              src="/embed/workspace"
+              src={process.env.NEXT_PUBLIC_HUDSON_EMBED_SRC || '/embed/workspace'}
               surface="workspace"
               sizing={{ mode: 'fill' }}
               density="comfy"
               workspace="self"
               template="hudson"
+              consumerId="hudsonos"
               expects={{
                 manifestPanel: true,
                 heroPinned: true,

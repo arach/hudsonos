@@ -55,6 +55,10 @@ export type HudsonEmbedProps = {
   template?: string;
   /** Ref-handle for state restore. */
   refHandle?: string;
+  /** Consumer identity — Hudson uses this to look up registered config
+   *  (theme, palette, fonts, default workspace) on its side. Sent as `?ref=`
+   *  on the iframe URL. */
+  consumerId?: string;
   /** Section expectations (hint, not contract). */
   expects?: EmbedContext['layout']['expects'];
   className?: string;
@@ -108,6 +112,7 @@ export function HudsonEmbed({
   instance,
   template,
   refHandle,
+  consumerId,
   expects,
   className,
   style,
@@ -124,6 +129,34 @@ export function HudsonEmbed({
       return new URL(src, window.location.origin).origin;
     } catch {
       return '*';
+    }
+  })();
+
+  // Build the iframe URL with first-paint runtime params.
+  // - ?ref=<consumerId>   → server-side registry lookup (theme/fonts/workspace/palette)
+  // - ?mode=<sizing.mode> → sizing intent
+  // - ?sizex=, ?sizey=    → known dimensions (only for fixed mode)
+  // - ?density=           → per-slot layout density
+  // postMessage carries live updates after mount, not first paint.
+  const iframeSrc = (() => {
+    try {
+      const isAbsolute = /^https?:\/\//i.test(src);
+      const url = new URL(src, typeof window === 'undefined' ? 'http://localhost' : window.location.origin);
+      if (consumerId) url.searchParams.set('ref', consumerId);
+      url.searchParams.set('mode', sizing.mode);
+      if (sizing.mode === 'fixed') {
+        url.searchParams.set('sizex', String(sizing.width));
+        url.searchParams.set('sizey', String(sizing.height));
+      }
+      if (density) url.searchParams.set('density', density);
+      // Surface is in the path on Hudson's route, but echoing here lets
+      // single-segment routes (our local mock) pick it up too.
+      url.searchParams.set('surface', surface);
+      // Preserve the absolute-vs-relative character of the input src so
+      // SSR/CSR agree and we don't lose cross-origin host info.
+      return isAbsolute ? url.toString() : url.pathname + url.search;
+    } catch {
+      return src;
     }
   })();
 
@@ -235,7 +268,7 @@ export function HudsonEmbed({
   return (
     <iframe
       ref={iframeRef}
-      src={src}
+      src={iframeSrc}
       title={title ?? `hudson embed · ${surface}`}
       data-hudson-embed-surface={surface}
       className={className}
