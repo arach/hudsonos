@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { consumerThemeStyle } from '../registry';
 
 const ALLOWED_ORIGINS = (() => {
   const list = new Set<string>();
@@ -42,7 +44,19 @@ function fmtUptime(seconds: number) {
   return `${m}:${s}`;
 }
 
-export default function WorkspaceEmbed() {
+export default function WorkspaceEmbedPage() {
+  return (
+    <Suspense fallback={null}>
+      <WorkspaceEmbed />
+    </Suspense>
+  );
+}
+
+function WorkspaceEmbed() {
+  const searchParams = useSearchParams();
+  const consumerRef = searchParams.get('ref');
+  const themeStyle = useMemo(() => consumerThemeStyle(consumerRef), [consumerRef]);
+
   const sentReady = useRef(false);
   const [uptimeSec, setUptimeSec] = useState(3);
   const [logTail, setLogTail] = useState<Array<{ ts: string; kw: string; text: string }>>([]);
@@ -105,7 +119,7 @@ export default function WorkspaceEmbed() {
   }, []);
 
   return (
-    <div className="workspace">
+    <div className="workspace" style={themeStyle}>
       <header className="workspace__top">
         <span className="workspace__brand">H&nbsp;hudson</span>
         <span className="workspace__crumb workspace__crumb--active">manifest</span>
