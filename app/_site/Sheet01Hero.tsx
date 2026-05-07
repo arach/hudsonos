@@ -165,6 +165,16 @@ export function Sheet01Hero() {
               src="/embed/workspace"
               surface="workspace"
               sizing={{ mode: 'fill' }}
+              density="comfy"
+              workspace="self"
+              template="hudson"
+              expects={{
+                manifestPanel: true,
+                heroPinned: true,
+                inspector: true,
+                buildStrip: true,
+                legend: true,
+              }}
               title="Hudson workspace · live embed"
             />
           </div>

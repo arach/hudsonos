@@ -7,16 +7,63 @@ export type EmbedSizing =
   | { mode: 'responsive'; aspectRatio?: string; minHeight?: number }
   | { mode: 'fill' };
 
+export type EmbedDensity = 'compact' | 'cozy' | 'comfy';
+
+export interface EmbedContext {
+  /** Hudson `--hud-*` color tokens. */
+  palette: Record<string, string>;
+  /** Hudson `--hud-font-*` typography tokens. */
+  fonts: Record<string, string>;
+  /** Layout hints — embed picks components / density to fit. */
+  layout: {
+    width: number;
+    height: number;
+    density?: EmbedDensity;
+    sizing: EmbedSizing;
+    /** Hint to the embed about which sections the host expects. Non-binding. */
+    expects?: {
+      manifestPanel?: boolean;
+      heroPinned?: boolean;
+      inspector?: boolean;
+      buildStrip?: boolean;
+      legend?: boolean;
+    };
+  };
+  /** Embed surface ID (matches `exports.embeds[i].id` on a Hudson manifest). */
+  surface: string;
+  /** Render context — what the embed should actually show. */
+  context: {
+    workspace?: string;
+    instance?: string;
+    template?: string;
+    ref?: string;
+    locale?: string;
+  };
+}
+
 export type HudsonEmbedProps = {
   src: string;
   surface: string;
   sizing?: EmbedSizing;
+  /** Layout density hint. Default: `comfy`. */
+  density?: EmbedDensity;
+  /** Which workspace to render. Default: `self`. */
+  workspace?: string;
+  /** Multi-instance disambiguator. */
+  instance?: string;
+  /** First-paint visual preset. */
+  template?: string;
+  /** Ref-handle for state restore. */
+  refHandle?: string;
+  /** Section expectations (hint, not contract). */
+  expects?: EmbedContext['layout']['expects'];
   className?: string;
   style?: CSSProperties;
   title?: string;
-  /** CSS variable names on the host that should mirror to Hudson's --hud-* tokens. */
+  /** Map of host CSS variables → Hudson `--hud-*` tokens. */
   themeMap?: Record<string, string>;
-  /** Element selector whose computed styles should be read as the theme source. Default: '.hudson-site' or :root. */
+  /** Element selector whose computed styles are read as the theme source.
+   *  Default: `.hudson-site`, falling back to `:root`. */
   themeFrom?: string;
 };
 
@@ -34,15 +81,34 @@ const DEFAULT_THEME_MAP: Record<string, string> = {
   '--accent-soft': '--hud-accent-soft',
   '--accent-line': '--hud-accent-line',
   '--stroke-w': '--hud-border-width',
+};
+
+const DEFAULT_FONT_MAP: Record<string, string> = {
   '--font-display': '--hud-font-display',
   '--font-body': '--hud-font-body',
   '--font-mono': '--hud-font-mono',
 };
 
+function readVars(el: Element, map: Record<string, string>): Record<string, string> {
+  const computed = getComputedStyle(el);
+  const out: Record<string, string> = {};
+  for (const [src, dest] of Object.entries(map)) {
+    const v = computed.getPropertyValue(src).trim();
+    if (v) out[dest] = v;
+  }
+  return out;
+}
+
 export function HudsonEmbed({
   src,
   surface,
   sizing = { mode: 'fill' },
+  density = 'comfy',
+  workspace = 'self',
+  instance,
+  template,
+  refHandle,
+  expects,
   className,
   style,
   title,
@@ -52,31 +118,76 @@ export function HudsonEmbed({
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [reportedHeight, setReportedHeight] = useState<number | null>(null);
 
-  const sendThemeSync = useCallback(() => {
-    const iframe = iframeRef.current;
-    if (!iframe || !iframe.contentWindow) return;
+  const targetOrigin = (() => {
+    try {
+      if (typeof window === 'undefined') return '*';
+      return new URL(src, window.location.origin).origin;
+    } catch {
+      return '*';
+    }
+  })();
 
+  const buildPalette = useCallback(() => {
     const sourceEl =
       (themeFrom && document.querySelector(themeFrom)) ||
       document.querySelector('.hudson-site') ||
       document.documentElement;
-    const computed = getComputedStyle(sourceEl as Element);
+    return readVars(sourceEl as Element, themeMap);
+  }, [themeFrom, themeMap]);
 
-    const vars: Record<string, string> = {};
-    for (const [siteKey, hudKey] of Object.entries(themeMap)) {
-      const value = computed.getPropertyValue(siteKey).trim();
-      if (value) vars[hudKey] = value;
-    }
+  const buildFonts = useCallback(() => {
+    const sourceEl =
+      (themeFrom && document.querySelector(themeFrom)) ||
+      document.querySelector('.hudson-site') ||
+      document.documentElement;
+    return readVars(sourceEl as Element, DEFAULT_FONT_MAP);
+  }, [themeFrom]);
 
-    let targetOrigin = '*';
-    try {
-      targetOrigin = new URL(src, window.location.origin).origin;
-    } catch {
-      /* keep wildcard */
-    }
+  const sendEmbedContext = useCallback(() => {
+    const iframe = iframeRef.current;
+    if (!iframe || !iframe.contentWindow) return;
 
+    const rect = iframe.getBoundingClientRect();
+    const ctx: EmbedContext = {
+      palette: buildPalette(),
+      fonts: buildFonts(),
+      layout: {
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+        density,
+        sizing,
+        expects,
+      },
+      surface,
+      context: {
+        workspace,
+        instance,
+        template,
+        ref: refHandle,
+      },
+    };
+
+    iframe.contentWindow.postMessage({ type: 'hudson:embed-context', context: ctx }, targetOrigin);
+  }, [
+    buildFonts,
+    buildPalette,
+    density,
+    expects,
+    instance,
+    refHandle,
+    sizing,
+    surface,
+    targetOrigin,
+    template,
+    workspace,
+  ]);
+
+  const sendThemeSync = useCallback(() => {
+    const iframe = iframeRef.current;
+    if (!iframe || !iframe.contentWindow) return;
+    const vars = { ...buildPalette(), ...buildFonts() };
     iframe.contentWindow.postMessage({ type: 'hudson:theme-sync', vars }, targetOrigin);
-  }, [src, themeFrom, themeMap]);
+  }, [buildFonts, buildPalette, targetOrigin]);
 
   useEffect(() => {
     function onMessage(e: MessageEvent) {
@@ -86,7 +197,7 @@ export function HudsonEmbed({
       if (!data || typeof data !== 'object') return;
 
       if (data.type === 'hudson:embed-ready') {
-        sendThemeSync();
+        sendEmbedContext();
       } else if (data.type === 'hudson:embed-resize' && sizing.mode === 'responsive') {
         if (typeof data.height === 'number') setReportedHeight(data.height);
       }
@@ -94,7 +205,21 @@ export function HudsonEmbed({
 
     window.addEventListener('message', onMessage);
     return () => window.removeEventListener('message', onMessage);
-  }, [sendThemeSync, sizing.mode]);
+  }, [sendEmbedContext, sizing.mode]);
+
+  // After the embed is mounted, push incremental theme-sync if the host theme changes.
+  // Detect with a MutationObserver on the source element's `style` and `class`.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const sourceEl =
+      (themeFrom && document.querySelector(themeFrom)) ||
+      document.querySelector('.hudson-site') ||
+      document.documentElement;
+    if (!sourceEl) return;
+    const obs = new MutationObserver(() => sendThemeSync());
+    obs.observe(sourceEl, { attributes: true, attributeFilter: ['style', 'class'] });
+    return () => obs.disconnect();
+  }, [sendThemeSync, themeFrom]);
 
   const sizeStyle: CSSProperties = (() => {
     if (sizing.mode === 'fixed') return { width: sizing.width, height: sizing.height };
