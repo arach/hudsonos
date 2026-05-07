@@ -1,6 +1,7 @@
 'use client';
 
 import { Counter } from './animate';
+import { HudsonEmbed } from './lib/embed';
 import { Eyebrow, FooterPlate, Slug, TitleBlock } from './Shared';
 
 export function Sheet01Hero() {
@@ -138,6 +139,54 @@ export function Sheet01Hero() {
             200pt LEAD
           </text>
         </svg>
+
+        {/* FIG. 01-A · LIVE EMBED — the workspace embed primitive at work */}
+        <div style={{ marginTop: 96, position: 'relative' }}>
+          <div
+            className="embed-plate__caption"
+            style={{ position: 'static', marginBottom: 14, justifyContent: 'space-between' }}
+          >
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+              <span className="live" />
+              FIG. 01-A · LIVE EMBED
+            </span>
+            <span style={{ color: 'var(--ink-3)', letterSpacing: '0.18em' }}>
+              workspace = self · installs <span style={{ color: 'var(--ink-1)' }}>2,847</span>
+              &nbsp;·&nbsp; stars <span style={{ color: 'var(--ink-1)' }}>1,217</span>
+            </span>
+          </div>
+
+          <div className="embed-plate" style={{ height: 720, position: 'relative' }}>
+            <span className="embed-plate__corner embed-plate__corner--tl" />
+            <span className="embed-plate__corner embed-plate__corner--tr" />
+            <span className="embed-plate__corner embed-plate__corner--bl" />
+            <span className="embed-plate__corner embed-plate__corner--br" />
+            <HudsonEmbed
+              src="/embed/workspace"
+              surface="workspace"
+              sizing={{ mode: 'fill' }}
+              title="Hudson workspace · live embed"
+            />
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              marginTop: 12,
+              fontFamily: 'var(--font-mono)',
+              fontSize: 10,
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-3)',
+            }}
+          >
+            <span>① capability map</span>
+            <span>② command dock</span>
+            <span>③ status bar</span>
+            <span>④ canvas · pan/zoom</span>
+          </div>
+        </div>
       </div>
 
       <FooterPlate
