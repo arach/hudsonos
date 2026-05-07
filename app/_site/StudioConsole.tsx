@@ -11,15 +11,16 @@ type PaletteOption = {
 };
 
 const DISPLAY_FONTS: FontOption[] = [
-  { id: 'fraunces', label: 'Fraunces', value: 'var(--font-fraunces), Times New Roman, serif' },
-  { id: 'playfair', label: 'Playfair', value: 'var(--font-playfair), Times New Roman, serif' },
+  { id: 'newsreader', label: 'Newsreader', value: 'var(--font-newsreader), Times New Roman, serif' },
+  { id: 'bodoni-moda', label: 'Bodoni Moda', value: 'var(--font-bodoni-moda), Times New Roman, serif' },
+  { id: 'spectral', label: 'Spectral', value: 'var(--font-spectral), Times New Roman, serif' },
   { id: 'cormorant', label: 'Cormorant', value: 'var(--font-cormorant), Times New Roman, serif' },
 ];
 
 const BODY_FONTS: FontOption[] = [
-  { id: 'inter', label: 'Inter', value: 'var(--font-inter), system-ui, sans-serif' },
+  { id: 'space-grotesk', label: 'Space Grotesk', value: 'var(--font-space-grotesk), system-ui, sans-serif' },
   { id: 'plex-sans', label: 'IBM Plex', value: 'var(--font-plex-sans), system-ui, sans-serif' },
-  { id: 'jura', label: 'Jura', value: 'var(--font-jura), system-ui, sans-serif' },
+  { id: 'geist', label: 'Geist', value: 'var(--font-geist), system-ui, sans-serif' },
 ];
 
 const MONO_FONTS: FontOption[] = [
@@ -99,22 +100,22 @@ const ACCENTS: PaletteOption[] = [
 
 const PAPERS: PaletteOption[] = [
   {
-    id: 'drafting',
-    label: 'Drafting',
-    swatch: 'oklch(0.96 0.005 200)',
+    id: 'linen',
+    label: 'Linen',
+    swatch: 'oklch(0.95 0.012 70)',
     vars: {
-      '--paper': 'oklch(0.96 0.005 200)',
-      '--paper-2': 'oklch(0.93 0.006 200)',
-      '--paper-3': 'oklch(0.89 0.008 200)',
-      '--paper-edge': 'oklch(0.84 0.01 200)',
-      '--ink': 'oklch(0.18 0.02 240)',
-      '--ink-1': 'oklch(0.30 0.02 240)',
-      '--ink-2': 'oklch(0.50 0.01 240)',
-      '--ink-3': 'oklch(0.66 0.008 240)',
-      '--ink-faint': 'oklch(0.78 0.006 240)',
-      '--line': 'oklch(0.78 0.012 240)',
-      '--line-strong': 'oklch(0.55 0.02 240)',
-      '--line-grid': 'oklch(0.86 0.01 240)',
+      '--paper': 'oklch(0.95 0.012 70)',
+      '--paper-2': 'oklch(0.92 0.014 70)',
+      '--paper-3': 'oklch(0.88 0.016 70)',
+      '--paper-edge': 'oklch(0.82 0.018 70)',
+      '--ink': 'oklch(0.22 0.014 60)',
+      '--ink-1': 'oklch(0.34 0.012 60)',
+      '--ink-2': 'oklch(0.52 0.010 60)',
+      '--ink-3': 'oklch(0.66 0.008 60)',
+      '--ink-faint': 'oklch(0.78 0.006 60)',
+      '--line': 'oklch(0.78 0.010 60)',
+      '--line-strong': 'oklch(0.56 0.014 60)',
+      '--line-grid': 'oklch(0.86 0.010 60)',
     },
   },
   {
@@ -177,17 +178,24 @@ const PAPERS: PaletteOption[] = [
 ];
 
 const DEFAULTS = {
-  display: 'fraunces',
-  body: 'inter',
+  display: 'newsreader',
+  body: 'space-grotesk',
   mono: 'jetbrains',
   accent: 'amber',
   paper: 'slate',
   gridMinor: 0.45,
   gridMajor: 0.55,
+  strokeW: 1.5,
+  radiusUI: 0,
+  radiusCard: 0,
+  bodyWeight: 400,
   audio: false,
+  audioUI: true,
+  audioCount: true,
+  audioType: true,
+  audioPage: false,
   snap: false,
   grain: false,
-  soft: false,
 };
 
 type State = typeof DEFAULTS;
@@ -203,43 +211,52 @@ const PRESETS: Preset[] = [
   {
     id: 'warm',
     label: 'Warm',
-    hint: 'cream · emerald · serif',
+    hint: 'linen · emerald · spectral',
     patch: {
-      paper: 'cream',
+      paper: 'linen',
       accent: 'emerald',
-      display: 'fraunces',
-      body: 'inter',
+      display: 'spectral',
+      body: 'plex-sans',
       mono: 'jetbrains',
+      strokeW: 1.25,
+      radiusUI: 3,
+      radiusCard: 4,
+      bodyWeight: 400,
       grain: true,
-      soft: false,
     },
   },
   {
     id: 'modern',
     label: 'Modern',
-    hint: 'bone · cobalt · plex',
+    hint: 'bone · cobalt · bodoni',
     patch: {
       paper: 'bone',
       accent: 'cobalt',
-      display: 'cormorant',
-      body: 'plex-sans',
+      display: 'bodoni-moda',
+      body: 'geist',
       mono: 'plex-mono',
+      strokeW: 1,
+      radiusUI: 6,
+      radiusCard: 8,
+      bodyWeight: 400,
       grain: false,
-      soft: true,
     },
   },
   {
     id: 'ink',
     label: 'Ink',
-    hint: 'slate · amber · fraunces',
+    hint: 'slate · amber · newsreader',
     patch: {
       paper: 'slate',
       accent: 'amber',
-      display: 'fraunces',
-      body: 'inter',
+      display: 'newsreader',
+      body: 'space-grotesk',
       mono: 'jetbrains',
+      strokeW: 1.5,
+      radiusUI: 0,
+      radiusCard: 0,
+      bodyWeight: 400,
       grain: false,
-      soft: false,
     },
   },
 ];
@@ -256,13 +273,13 @@ export function StudioConsole() {
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<State>(DEFAULTS);
 
-  // Load saved settings
+  // Load saved settings — anchor to DEFAULTS so old persisted shapes are forward-compatible
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as Partial<State>;
-        setState((s) => ({ ...s, ...parsed }));
+        setState({ ...DEFAULTS, ...parsed });
       }
     } catch {
       // ignore
@@ -286,15 +303,22 @@ export function StudioConsole() {
       '--font-display': display.value,
       '--font-body': body.value,
       '--font-mono': mono.value,
+      '--font-weight-body': String(state.bodyWeight ?? DEFAULTS.bodyWeight),
       '--grid-opacity-minor': String(state.gridMinor),
       '--grid-opacity-major': String(state.gridMajor),
+      '--stroke-w': `${state.strokeW ?? DEFAULTS.strokeW}px`,
+      '--radius-ui': `${state.radiusUI ?? DEFAULTS.radiusUI}px`,
+      '--radius-card': `${state.radiusCard ?? DEFAULTS.radiusCard}px`,
     });
 
     root.classList.toggle('snap', state.snap);
     root.classList.toggle('grain', state.grain);
-    root.classList.toggle('soft', state.soft);
 
     window.__hudAudio?.setEnabled(state.audio);
+    window.__hudAudio?.setCategory?.('ui', state.audioUI);
+    window.__hudAudio?.setCategory?.('count', state.audioCount);
+    window.__hudAudio?.setCategory?.('type', state.audioType);
+    window.__hudAudio?.setCategory?.('page', state.audioPage);
 
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -305,7 +329,7 @@ export function StudioConsole() {
 
   function applyPreset(preset: Preset) {
     setState((s) => ({ ...s, ...preset.patch }));
-    window.__hudAudio?.whoosh();
+    window.__hudAudio?.whoosh({ cat: 'ui' });
   }
 
   function set<K extends keyof State>(key: K, value: State[K]) {
@@ -403,19 +427,48 @@ export function StudioConsole() {
               </button>
               <button
                 className="studio-console__chip"
-                aria-pressed={state.soft}
-                onClick={() => set('soft', !state.soft)}
-              >
-                Soft
-              </button>
-              <button
-                className="studio-console__chip"
                 aria-pressed={state.audio}
                 onClick={() => set('audio', !state.audio)}
               >
                 Sound
               </button>
             </div>
+            {state.audio && (
+              <div className="studio-console__chips" style={{ marginTop: 6 }}>
+                <button
+                  className="studio-console__chip"
+                  aria-pressed={state.audioUI}
+                  onClick={() => set('audioUI', !state.audioUI)}
+                  title="Button clicks · UI feedback"
+                >
+                  · UI
+                </button>
+                <button
+                  className="studio-console__chip"
+                  aria-pressed={state.audioCount}
+                  onClick={() => set('audioCount', !state.audioCount)}
+                  title="Number count-ups in hero stats"
+                >
+                  · Counts
+                </button>
+                <button
+                  className="studio-console__chip"
+                  aria-pressed={state.audioType}
+                  onClick={() => set('audioType', !state.audioType)}
+                  title="Typewriter effect on ship block"
+                >
+                  · Type
+                </button>
+                <button
+                  className="studio-console__chip"
+                  aria-pressed={state.audioPage}
+                  onClick={() => set('audioPage', !state.audioPage)}
+                  title="Sheet flips · preset whoosh (already played once on first visit)"
+                >
+                  · Pages
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="studio-console__group">
@@ -515,6 +568,81 @@ export function StudioConsole() {
                   {p.label}
                 </button>
               ))}
+            </div>
+          </div>
+
+          <div className="studio-console__group">
+            <div className="studio-console__label">
+              <span>Line</span>
+              <span className="meta">{(state.strokeW ?? DEFAULTS.strokeW).toFixed(2)} px stroke</span>
+            </div>
+            <div className="studio-console__row">
+              <span style={{ fontSize: 9, letterSpacing: '0.16em', color: 'var(--ink-2)' }}>
+                WEIGHT
+              </span>
+              <input
+                type="range"
+                min={0.5}
+                max={3}
+                step={0.25}
+                value={state.strokeW ?? DEFAULTS.strokeW}
+                onChange={(e) => set('strokeW', Number(e.target.value))}
+              />
+            </div>
+          </div>
+
+          <div className="studio-console__group">
+            <div className="studio-console__label">
+              <span>Radius</span>
+              <span className="meta">UI · cards</span>
+            </div>
+            <div className="studio-console__row">
+              <span style={{ fontSize: 9, letterSpacing: '0.16em', color: 'var(--ink-2)' }}>
+                UI · {state.radiusUI ?? DEFAULTS.radiusUI}
+              </span>
+              <input
+                type="range"
+                min={0}
+                max={10}
+                step={1}
+                value={state.radiusUI ?? DEFAULTS.radiusUI}
+                onChange={(e) => set('radiusUI', Number(e.target.value))}
+                title="btn · code · tag · kbd · console chips"
+              />
+            </div>
+            <div className="studio-console__row">
+              <span style={{ fontSize: 9, letterSpacing: '0.16em', color: 'var(--ink-2)' }}>
+                CARD · {state.radiusCard ?? DEFAULTS.radiusCard}
+              </span>
+              <input
+                type="range"
+                min={0}
+                max={16}
+                step={1}
+                value={state.radiusCard ?? DEFAULTS.radiusCard}
+                onChange={(e) => set('radiusCard', Number(e.target.value))}
+                title="hero stats · app cards · step cards · feature cards · manifest · final note"
+              />
+            </div>
+          </div>
+
+          <div className="studio-console__group">
+            <div className="studio-console__label">
+              <span>Body weight</span>
+              <span className="meta">{state.bodyWeight ?? DEFAULTS.bodyWeight}</span>
+            </div>
+            <div className="studio-console__row">
+              <span style={{ fontSize: 9, letterSpacing: '0.16em', color: 'var(--ink-2)' }}>
+                WEIGHT
+              </span>
+              <input
+                type="range"
+                min={300}
+                max={700}
+                step={100}
+                value={state.bodyWeight ?? DEFAULTS.bodyWeight}
+                onChange={(e) => set('bodyWeight', Number(e.target.value))}
+              />
             </div>
           </div>
 

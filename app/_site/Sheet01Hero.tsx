@@ -44,27 +44,29 @@ export function Sheet01Hero() {
           <a
             className="btn btn--accent"
             href="#install"
-            onClick={() => window.__hudAudio?.chime()}
+            onClick={() => window.__hudAudio?.chime({ cat: 'ui' })}
           >
             $ brew install hudson
           </a>
           <a
             className="btn btn--ghost"
             href="#github"
-            onClick={() => window.__hudAudio?.tick(0.08)}
+            onClick={() => window.__hudAudio?.tick({ cat: 'ui', gain: 0.08 })}
           >
             View source · GitHub
           </a>
         </div>
 
         <div
+          className="hud-card"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 0,
-            border: '1.5px solid var(--ink)',
+            border: 'var(--stroke-w) solid var(--ink)',
             background: 'var(--paper)',
             maxWidth: 880,
+            overflow: 'hidden',
           }}
         >
           {stats.map((c, i) => (

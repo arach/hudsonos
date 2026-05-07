@@ -260,8 +260,9 @@ export function Sheet03Voice() {
           {FEATURES.map((p) => (
             <div
               key={p.t}
+              className="hud-card"
               style={{
-                border: '1.5px solid var(--ink)',
+                border: 'var(--stroke-w) solid var(--ink)',
                 background: 'var(--paper)',
                 padding: 22,
                 display: 'flex',

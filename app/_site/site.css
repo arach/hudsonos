@@ -29,17 +29,30 @@
   --accent-line:  oklch(0.72 0.18 60 / 0.45);
 
   /* Typography — overridden by StudioConsole at runtime */
-  --font-display: var(--font-fraunces), 'Times New Roman', serif;
-  --font-body:    var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-newsreader), 'Times New Roman', serif;
+  --font-body:    var(--font-space-grotesk), system-ui, sans-serif;
   --font-mono:    var(--font-jetbrains-mono), ui-monospace, monospace;
 
   /* Grid intensity (0..1) — overridden by StudioConsole */
   --grid-opacity-minor: 0.45;
   --grid-opacity-major: 0.55;
 
+  /* Stroke weight — overridden by StudioConsole */
+  --stroke-w: 1.5px;
+
+  /* Two radius classes — sync independently from the studio console.
+     --radius-ui = small UI: btn, code, tag, kbd, chips, console panel
+     --radius-card = larger content boxes: hero stats, app cards, step cards, feature cards, manifest box, final-note */
+  --radius-ui: 0px;
+  --radius-card: 0px;
+
+  /* Body weight — overridden by StudioConsole */
+  --font-weight-body: 400;
+
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
+  font-weight: var(--font-weight-body);
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -108,7 +121,7 @@
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  border: 1.5px solid var(--ink);
+  border: var(--stroke-w) solid var(--ink);
   background: var(--paper);
   display: grid;
   color: var(--ink);
@@ -198,13 +211,13 @@
 .hudson-site .h-display em { font-style: italic; font-weight: 400; }
 .hudson-site .h-display .boxed {
   display: inline-block;
-  border: 1.5px solid var(--ink);
+  border: var(--stroke-w) solid var(--ink);
   padding: 0 0.18em 0.05em;
   margin: 0 0.04em;
   font-style: normal;
 }
 .hudson-site .h-display .underline {
-  border-bottom: 1.5px solid var(--accent);
+  border-bottom: var(--stroke-w) solid var(--accent);
   padding-bottom: 0.04em;
 }
 .hudson-site .h-section {
@@ -248,11 +261,11 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
-  border-radius: 0;
-  border: 1.5px solid var(--ink);
+  border-radius: var(--radius-ui);
+  border: var(--stroke-w) solid var(--ink);
   background: var(--ink);
   color: var(--paper);
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, border-radius 0.15s;
 }
 .hudson-site .btn:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
 .hudson-site .btn--ghost { background: transparent; color: var(--ink); }
@@ -302,7 +315,7 @@
 
 .hudson-site .part {
   position: relative;
-  border: 1.5px solid var(--ink);
+  border: var(--stroke-w) solid var(--ink);
   background: var(--paper);
   padding: 22px 22px 18px;
   display: flex; flex-direction: column; gap: 12px;
@@ -367,22 +380,27 @@
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.13   0 0 0 0 0.16   0 0 0 0 0.20   0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-/* ─── Soft corners (Studio toggle) ─── */
-.hudson-site.soft .spec,
-.hudson-site.soft .part,
-.hudson-site.soft .btn,
-.hudson-site.soft .code,
-.hudson-site.soft pre.code,
-.hudson-site.soft .titleblock,
-.hudson-site.soft .footer-plate { border-radius: 2px; }
-.hudson-site.soft .embed-plate { border-radius: 1px; }
-.hudson-site.soft .h-display .boxed { border-radius: 2px; }
+/* ─── UI radius — small chrome-y elements ─── */
+.hudson-site .code,
+.hudson-site pre.code,
+.hudson-site .tag,
+.hudson-site .kbd { border-radius: var(--radius-ui); transition: border-radius 0.15s; }
+
+/* ─── Card radius — larger content panels ─── */
+.hudson-site .spec,
+.hudson-site .part,
+.hudson-site .hud-card { border-radius: var(--radius-card); transition: border-radius 0.15s; }
+
+/* Studio Console UI uses --radius-ui */
+.studio-console__panel,
+.studio-console__chip,
+.studio-console__toggle { border-radius: var(--radius-ui); }
 
 /* ─── Embed plate ─── */
 
 .hudson-site .embed-plate {
   position: relative;
-  border: 1.5px solid var(--ink);
+  border: var(--stroke-w) solid var(--ink);
   background: var(--ink);
   box-shadow: 0 2px 0 var(--paper-edge);
 }
@@ -407,7 +425,7 @@
 .hudson-site .embed-plate__corner {
   position: absolute;
   width: 12px; height: 12px;
-  border: 1.5px solid var(--ink);
+  border: var(--stroke-w) solid var(--ink);
   background: var(--paper);
 }
 .hudson-site .embed-plate__corner--tl { top: -7px; left: -7px; }
@@ -466,7 +484,7 @@
   font-size: 12px;
   line-height: 1.6;
   padding: 16px 18px;
-  border: 1.5px solid var(--ink);
+  border: var(--stroke-w) solid var(--ink);
   white-space: pre;
   overflow-x: auto;
 }
@@ -508,7 +526,7 @@
   padding: 10px 14px;
   background: var(--ink);
   color: var(--paper);
-  border: 1.5px solid var(--ink);
+  border: var(--stroke-w) solid var(--ink);
   font-family: inherit;
   font-size: 11px;
   letter-spacing: 0.16em;
@@ -526,7 +544,7 @@
 .studio-console__panel {
   width: 320px;
   background: var(--paper);
-  border: 1.5px solid var(--ink);
+  border: var(--stroke-w) solid var(--ink);
   box-shadow: 0 6px 0 var(--paper-edge);
   display: flex;
   flex-direction: column;

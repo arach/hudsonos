@@ -56,8 +56,9 @@ export function Sheet07Quickstart() {
           {STEPS.map((s) => (
             <div
               key={s.n}
+              className="hud-card"
               style={{
-                border: '1.5px solid var(--ink)',
+                border: 'var(--stroke-w) solid var(--ink)',
                 background: 'var(--paper)',
                 padding: '20px 22px',
                 display: 'flex',
@@ -99,8 +100,9 @@ export function Sheet07Quickstart() {
         </div>
 
         <div
+          className="hud-card"
           style={{
-            border: '1.5px solid var(--ink)',
+            border: 'var(--stroke-w) solid var(--ink)',
             background: 'var(--ink)',
             color: 'oklch(0.95 0 0)',
             padding: '40px 48px',

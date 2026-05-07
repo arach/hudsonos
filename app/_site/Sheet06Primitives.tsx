@@ -147,7 +147,7 @@ export function Sheet06Primitives() {
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 0,
-            border: '1.5px solid var(--ink)',
+            border: 'var(--stroke-w) solid var(--ink)',
             background: 'var(--paper)',
           }}
         >

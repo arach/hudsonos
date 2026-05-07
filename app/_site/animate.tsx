@@ -7,13 +7,18 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
    Ported from design bundle animate.jsx
    ───────────────────────────────────────────────────────────── */
 
+export type SoundCat = 'ui' | 'count' | 'type' | 'page';
+
+type Opts = { cat?: SoundCat; gain?: number };
+
 type HudAudio = {
-  tick: (gain?: number) => void;
-  chime: () => void;
-  flip: () => void;
-  whoosh: () => void;
+  tick: (opts?: Opts) => void;
+  chime: (opts?: Opts) => void;
+  flip: (opts?: Opts) => void;
+  whoosh: (opts?: Opts) => void;
   setEnabled: (v: boolean) => void;
   isEnabled: () => boolean;
+  setCategory: (cat: SoundCat, v: boolean) => void;
 };
 
 declare global {
@@ -67,11 +72,11 @@ export function useCountUp(
       const cur = Math.round(target * eased);
       setVal(cur);
       if (cur !== lastTick.current && cur < target) {
-        window.__hudAudio?.tick();
+        window.__hudAudio?.tick({ cat: 'count' });
         lastTick.current = cur;
       }
       if (p < 1) raf = requestAnimationFrame(step);
-      else window.__hudAudio?.chime();
+      else window.__hudAudio?.chime({ cat: 'count' });
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
@@ -102,7 +107,7 @@ export function useTypewriter(
       if (i <= text.length) {
         setOut(text.slice(0, i));
         if (i > 0 && text[i - 1] !== ' ') {
-          window.__hudAudio?.tick(0.02);
+          window.__hudAudio?.tick({ cat: 'type', gain: 0.02 });
         }
         i += 1;
         timer = setTimeout(tick, speed);
@@ -124,14 +129,20 @@ export function initAudio(): HudAudio | null {
 
   let ctx: AudioContext | null = null;
   let enabled = false;
+  const cats: Record<SoundCat, boolean> = {
+    ui: true,
+    count: true,
+    type: true,
+    page: false,
+  };
   try {
     enabled = localStorage.getItem('hud-audio') === '1';
   } catch {
     /* ignore */
   }
 
-  const ensure = (): AudioContext | null => {
-    if (!enabled) return null;
+  const ensure = (cat: SoundCat = 'ui'): AudioContext | null => {
+    if (!enabled || !cats[cat]) return null;
     if (!ctx) {
       const Ctor = window.AudioContext ?? window.webkitAudioContext;
       if (!Ctor) return null;
@@ -145,8 +156,8 @@ export function initAudio(): HudAudio | null {
     return ctx;
   };
 
-  const tick: HudAudio['tick'] = (gain = 0.05) => {
-    const c = ensure();
+  const tick: HudAudio['tick'] = ({ cat = 'ui', gain = 0.05 } = {}) => {
+    const c = ensure(cat);
     if (!c) return;
     const osc = c.createOscillator();
     const g = c.createGain();
@@ -159,8 +170,8 @@ export function initAudio(): HudAudio | null {
     osc.stop(c.currentTime + 0.04);
   };
 
-  const chime: HudAudio['chime'] = () => {
-    const c = ensure();
+  const chime: HudAudio['chime'] = ({ cat = 'ui' } = {}) => {
+    const c = ensure(cat);
     if (!c) return;
     const osc = c.createOscillator();
     const g = c.createGain();
@@ -173,8 +184,8 @@ export function initAudio(): HudAudio | null {
     osc.stop(c.currentTime + 0.2);
   };
 
-  const flip: HudAudio['flip'] = () => {
-    const c = ensure();
+  const flip: HudAudio['flip'] = ({ cat = 'page' } = {}) => {
+    const c = ensure(cat);
     if (!c) return;
     const buf = c.createBuffer(1, c.sampleRate * 0.06, c.sampleRate);
     const data = buf.getChannelData(0);
@@ -192,8 +203,8 @@ export function initAudio(): HudAudio | null {
     src.start();
   };
 
-  const whoosh: HudAudio['whoosh'] = () => {
-    const c = ensure();
+  const whoosh: HudAudio['whoosh'] = ({ cat = 'page' } = {}) => {
+    const c = ensure(cat);
     if (!c) return;
     const buf = c.createBuffer(1, c.sampleRate * 0.25, c.sampleRate);
     const data = buf.getChannelData(0);
@@ -213,17 +224,24 @@ export function initAudio(): HudAudio | null {
   };
 
   const setEnabled: HudAudio['setEnabled'] = (v) => {
+    const wasEnabled = enabled;
     enabled = v;
     try {
       localStorage.setItem('hud-audio', v ? '1' : '0');
     } catch {
       /* ignore */
     }
-    if (v) flip();
+    // Confirmation cue ONLY on a real off→on transition,
+    // not on page reload when audio was already saved as on.
+    if (v && !wasEnabled) flip({ cat: 'ui' });
   };
   const isEnabled = () => enabled;
 
-  const api: HudAudio = { tick, chime, flip, whoosh, setEnabled, isEnabled };
+  const setCategory: HudAudio['setCategory'] = (cat, v) => {
+    cats[cat] = v;
+  };
+
+  const api: HudAudio = { tick, chime, flip, whoosh, setEnabled, isEnabled, setCategory };
   window.__hudAudio = api;
   return api;
 }
@@ -254,9 +272,20 @@ export function useMetadataParallax() {
   }, []);
 }
 
-/* Sheet-flip detector — paper-flip sound when a new sheet enters view */
+/* Sheet-flip detector — paper-flip sound when a new sheet enters view.
+   Gated to once per browser session so it doesn't replay on every reload. */
+const SHEET_FLIP_KEY = 'hud-flip-played';
+
 export function useSheetFlipSound() {
   useEffect(() => {
+    let alreadyPlayed = false;
+    try {
+      alreadyPlayed = sessionStorage.getItem(SHEET_FLIP_KEY) === '1';
+    } catch {
+      /* ignore */
+    }
+    if (alreadyPlayed) return;
+
     const sheets = document.querySelectorAll<HTMLElement>('.hudson-site .sheet');
     let lastFired = -1;
     const obs = new IntersectionObserver(
@@ -266,7 +295,7 @@ export function useSheetFlipSound() {
             const idx = Array.from(sheets).indexOf(e.target as HTMLElement);
             if (idx !== lastFired) {
               lastFired = idx;
-              window.__hudAudio?.flip();
+              window.__hudAudio?.flip({ cat: 'page' });
             }
           }
         });
@@ -274,7 +303,22 @@ export function useSheetFlipSound() {
       { threshold: [0.4] },
     );
     sheets.forEach((s) => obs.observe(s));
-    return () => obs.disconnect();
+
+    // Mark this session as having heard the flip cue once the user has scrolled at all
+    const onScroll = () => {
+      try {
+        sessionStorage.setItem(SHEET_FLIP_KEY, '1');
+      } catch {
+        /* ignore */
+      }
+      window.removeEventListener('scroll', onScroll);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      obs.disconnect();
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 }
 

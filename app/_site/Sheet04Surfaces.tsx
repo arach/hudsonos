@@ -23,7 +23,7 @@ function ShipBlock() {
       setTimeout(() => setStage(4), 2700),
       setTimeout(() => {
         setStage(5);
-        window.__hudAudio?.chime();
+        window.__hudAudio?.chime({ cat: 'type' });
       }, 3200),
     ];
     return () => timers.forEach(clearTimeout);
@@ -58,8 +58,9 @@ function ShipBlock() {
 function ManifestBox() {
   return (
     <div
+      className="hud-card"
       style={{
-        border: '1.5px solid var(--ink)',
+        border: 'var(--stroke-w) solid var(--ink)',
         background: 'var(--ink)',
         color: 'oklch(0.92 0 0)',
         padding: 18,
@@ -177,7 +178,7 @@ function PlatformFrame({
           width: W,
           height: H,
           background: 'oklch(0.145 0 0)',
-          border: '1.5px solid var(--ink)',
+          border: 'var(--stroke-w) solid var(--ink)',
           borderRadius: radius,
           position: 'relative',
           overflow: 'hidden',
@@ -368,14 +369,14 @@ export function Sheet04Surfaces() {
 
         <h2 className="h-section" style={{ marginBottom: 48 }}>
           Write <em>once</em>. Render on{' '}
-          <span style={{ borderBottom: '1.5px solid var(--accent)' }}>iOS</span>,{' '}
-          <span style={{ borderBottom: '1.5px solid var(--accent)' }}>macOS</span>, and the{' '}
-          <span style={{ borderBottom: '1.5px solid var(--accent)' }}>Web</span>.
+          <span style={{ borderBottom: 'var(--stroke-w) solid var(--accent)' }}>iOS</span>,{' '}
+          <span style={{ borderBottom: 'var(--stroke-w) solid var(--accent)' }}>macOS</span>, and the{' '}
+          <span style={{ borderBottom: 'var(--stroke-w) solid var(--accent)' }}>Web</span>.
         </h2>
 
         <div
           style={{
-            border: '1.5px solid var(--ink)',
+            border: 'var(--stroke-w) solid var(--ink)',
             background: 'var(--paper)',
             padding: 40,
             marginBottom: 48,

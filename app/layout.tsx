@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import {
+  Geist,
   Geist_Mono,
   Jura,
-  Fraunces,
-  Inter,
+  Space_Grotesk,
   JetBrains_Mono,
-  Playfair_Display,
+  Newsreader,
+  Bodoni_Moda,
+  Spectral,
   Cormorant_Garamond,
   IBM_Plex_Sans,
   IBM_Plex_Mono,
@@ -24,15 +26,14 @@ const jura = Jura({
   display: "swap",
 });
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
   display: "swap",
-  axes: ["opsz", "SOFT"],
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
   display: "swap",
 });
@@ -43,16 +44,34 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
   subsets: ["latin"],
   display: "swap",
+  style: ["normal", "italic"],
+  axes: ["opsz"],
+});
+
+const bodoniModa = Bodoni_Moda({
+  variable: "--font-bodoni-moda",
+  subsets: ["latin"],
+  display: "swap",
+  style: ["normal", "italic"],
+});
+
+const spectral = Spectral({
+  variable: "--font-spectral",
+  subsets: ["latin"],
+  display: "swap",
+  style: ["normal", "italic"],
+  weight: ["400", "500", "600"],
 });
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
   display: "swap",
+  style: ["normal", "italic"],
   weight: ["400", "500", "600"],
 });
 
@@ -60,7 +79,7 @@ const ibmPlexSans = IBM_Plex_Sans({
   variable: "--font-plex-sans",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 const ibmPlexMono = IBM_Plex_Mono({
@@ -99,7 +118,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${jura.variable} ${geistMono.variable} ${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} ${cormorant.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}
+      className={`${jura.variable} ${geist.variable} ${geistMono.variable} ${newsreader.variable} ${bodoniModa.variable} ${spectral.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}
     >
       <head>
         <Script

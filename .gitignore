@@ -25,3 +25,11 @@ next-env.d.ts
 bun.lockb
 .lattices.json
 app/_landing/HudsonGridField.tsx
+# OpenScout local state
+.openscout/project.json
+
+# Claude tooling (local-only)
+.claude/
+
+# Work-in-progress files
+*.wip

@@ -38,12 +38,14 @@ const APPS = [
 function AppCard({ app, index }: { app: typeof APPS[number]; index: number }) {
   return (
     <div
+      className="hud-card"
       style={{
-        border: '1.5px solid var(--ink)',
+        border: 'var(--stroke-w) solid var(--ink)',
         background: 'var(--paper)',
         display: 'grid',
         gridTemplateColumns: '180px 1fr',
         position: 'relative',
+        overflow: 'hidden',
       }}
     >
       <div
