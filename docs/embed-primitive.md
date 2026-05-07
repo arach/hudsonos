@@ -1,11 +1,20 @@
-# Hudson Embed Primitive — RFC v0.2
+# Hudson Embed Primitive — RFC v0.3
 
-**Status:** accepted; implementation greenlit (steps 1–3)
-**Date:** 2026-05-06
+**Status:** consumer side shipped (POC); Hudson side outstanding
+**Date:** 2026-05-07
 **Source:** Hudson (`hudson.codex-image-process-lab-exports.mini`) via Scout, conversation `dm.hudson.codex-image-process-lab-exports.mini.hudsonos.main.mini`
 **Work item:** `work-mousdekx-3m6eye`
 
-> v0.1 → v0.2 folded three pushbacks (theme translation flips to consumer-side; resize authority gated by sizing mode; `<HudsonEmbed>` split into standalone `@hudson/embed-react` package), closed open questions 1 (origin allowlist — fail closed) and 5 (SSG rebuild — acceptable for v1), and added three extensions: A) hosted vs SDK render modes, B) first-class share UX inside Hudson, C) ref-handle protocol with Scout broker as agent-share transport.
+> v0.2 → v0.3 promotes the workspace mock at `/embed/workspace` to the **surface contract** (visual + structural target Hudson should match in spirit, not pixel-perfect), expands the host→embed handshake from `theme-sync` (palette + fonts only) to a richer `embed-context` (palette + fonts + layout hints + surface + workspace context), and reframes the consumer-side as the source of truth for *what should appear* — Hudson supplies *real components* that satisfy that contract.
+
+## v0.3 deltas at a glance
+
+| Concern | v0.2 | v0.3 |
+|---|---|---|
+| Host → embed message | `hudson:theme-sync` (palette + fonts) | `hudson:embed-context` (palette + fonts + layout + surface + context); `theme-sync` retained for incremental updates |
+| Surface contract | RFC prose | live mock at `/embed/workspace` + `app/embed/workspace/page.tsx` JSX as structural blueprint |
+| Embed authoring expectation | "render the surface" | render *real Hudson components* themed/sized to host context, hitting roughly the same sections at roughly the same density as the mock |
+| Fallback when Hudson is offline | not addressed | host-side mock keeps rendering; host swaps iframe `src` to Hudson when ready |
 
 ---
 
@@ -39,27 +48,79 @@ type EmbedSizing =
   | { mode: 'fill' };
 ```
 
-### 2. Theme Handshake — v0.2: consumer-side translation
+### 2. Handshake — v0.3: `embed-context` (was `theme-sync`)
 
 **Pushback 1 accepted.** The embed route speaks only `--hud-*` tokens. Consumers translate outbound.
 
 **Layer A: URL params (static, first paint)**
 Unchanged. `?theme=dark&template=hudson` on the iframe src.
 
-**Layer B: postMessage (dynamic, live theming)**
+**Layer B: postMessage (dynamic, live context)**
+
+v0.3 expands the host→embed message from theme-only to a full render context the embed can act on. Hudson's real components consume this to choose layout density, scope to the right workspace/instance, and theme themselves with the host's palette + fonts.
 
 ```typescript
-// Protocol — embed route only accepts --hud-* tokens
+// Protocol — host → embed sends a full context once on embed-ready,
+// then incremental theme-sync updates as host theme changes live.
 type EmbedMessage =
-  | { type: 'hudson:theme-sync'; vars: Record<string, string> }  // host → embed (--hud-* only)
-  | { type: 'hudson:embed-ready'; surfaceId: string; sizing: EmbedSizing }
-  | { type: 'hudson:embed-resize'; width: number; height: number }
+  | { type: 'hudson:embed-context'; context: EmbedContext }       // host → embed (full context, on embed-ready)
+  | { type: 'hudson:theme-sync'; vars: Record<string, string> }   // host → embed (--hud-* only, incremental)
+  | { type: 'hudson:embed-ready'; surfaceId: string; sizing: EmbedSizing }   // embed → host
+  | { type: 'hudson:embed-resize'; width: number; height: number };          // embed → host (responsive only)
+
+interface EmbedContext {
+  /** Color tokens — only --hud-* keys are honored by the embed route. */
+  palette: Record<string, string>;
+
+  /** Typography tokens — --hud-font-display / --hud-font-body / --hud-font-mono. */
+  fonts: Record<string, string>;
+
+  /** Layout hints. Embed picks components + density to fit. */
+  layout: {
+    width: number;
+    height: number;
+    density?: 'compact' | 'cozy' | 'comfy';
+    sizing: EmbedSizing;
+    /** Optional structural expectations — host signals which sections it expects.
+        Embed may honor or omit; this is a hint, not a hard contract. */
+    expects?: {
+      manifestPanel?: boolean;
+      heroPinned?: boolean;
+      inspector?: boolean;
+      buildStrip?: boolean;
+      legend?: boolean;
+    };
+  };
+
+  /** Which embed surface — maps to exports.embeds[i].id on the manifest. */
+  surface: string;
+
+  /** Render context — what to actually show. */
+  context: {
+    workspace?: string;       // 'self' | 'talkie' | 'lattices' | ... — which workspace to render
+    instance?: string;        // for multi-instance surfaces
+    template?: string;        // 'hudson' | 'minimal' | ... — first-paint visual preset
+    ref?: string;             // ref-handle for state restore (see §7)
+    locale?: string;
+  };
+}
 
 // Embed-side listener (injected by embed route)
 window.addEventListener('message', (e) => {
-  if (!isAllowedOrigin(e.origin)) return;  // fail closed — see §7
-  if (e.data.type === 'hudson:theme-sync') {
-    for (const [k, v] of Object.entries(e.data.vars)) {
+  if (!isAllowedOrigin(e.origin)) return;  // fail closed — see §8
+
+  if (e.data.type === 'hudson:embed-context') {
+    const ctx = e.data.context as EmbedContext;
+    applyTokens(ctx.palette);            // --hud-* color tokens
+    applyTokens(ctx.fonts);              // --hud-font-*
+    setDensity(ctx.layout.density);      // 'compact' | 'cozy' | 'comfy'
+    mountSurface(ctx.surface, ctx.context);  // pick components, scope to workspace
+  } else if (e.data.type === 'hudson:theme-sync') {
+    applyTokens(e.data.vars);            // incremental theme updates
+  }
+
+  function applyTokens(vars: Record<string, string>) {
+    for (const [k, v] of Object.entries(vars ?? {})) {
       if (!k.startsWith('--hud-')) continue;  // reject non-hud vars
       document.documentElement.style.setProperty(k, v);
     }
@@ -333,7 +394,42 @@ export function generateStaticParams() {
 | 4 | Resize advisory wording | Open — v0.2 split authority by sizing mode; exact clamping behavior TBD per consumer |
 | 6 | WorkspaceShell empty-canvas behavior | Open — does `/embed/workspace` with no focused app show an empty canvas, a grid of app icons, or the boot animation? Needs design input |
 
-### 12. Implementation Order
+### 12. Surface Contract — `/embed/workspace` (v0.3)
+
+The hudsonos consumer side ships a working iframe-based embed at `/embed/workspace` whose **structure and density** define what the real Hudson-side embed should render. Hudson's version uses real components (real `<WorkspaceShell>`, `<ManifestPanel>`, `<CapabilityMap>`, `<RuntimeInspector>`) and will look different — this is intended — but should hit roughly the same sections at roughly the same density and feel.
+
+**Live URL:** `https://hudsonos.com/embed/workspace` (hudsonos repo, branch `homepage-polish`, file `app/embed/workspace/page.tsx`).
+
+**Sections the surface contract expects (workspace surface, density `comfy`):**
+
+| Section | Mock content (placeholder data) | Real Hudson source |
+|---|---|---|
+| Top bar | `H hudson` brand · breadcrumbs (manifest / canvas / inspector / install) · `workspace · self` · ⌘K · install button | Hudson's actual NavigationBar primitive |
+| Manifest panel (left, ~240px) | manifest.ts text dump · apps list · primitives list · "this panel is rendered by `<SidePanel side='left' />`" caption | Real `<ManifestPanel>` reading the actual workspace manifest |
+| Hero pinned (center) | "HERO · pinned" tab badge · "You are inside a Hudson app" eyebrow · "This page is built *with itself.*" headline · body copy · two CTAs | Real `<HeroPinned>` or first-class app hero primitive |
+| Inspector (right, ~260px) | capability map (5-node graph) · runtime stats table (uptime, intents, commands, services, ai.provider, ai.model, voice, theme) · log feed with blinking cursor | Real `<CapabilityMap>` + `<RuntimeInspector>` + `<LogFeed>` |
+| Build strip (bottom) | DECLARE → WIRE → COMPOSE → SHIP — 4 step cards, each with a numbered badge, a one-sentence body, and a code snippet | Real `<BuildSequence>` or onboarding primitive |
+| Legend (footer) | ① capability map · ② command dock · ③ status bar · ④ canvas · pan/zoom | Same — registration footer for the embed plate |
+
+**Feel notes (non-binding but hold the line on):**
+
+- **Density:** mono-typeset, 10–11px body text, generous whitespace inside panels but tight vertical rhythm. Engineering-drawing adjacent.
+- **Color discipline:** one accent color (default emerald `oklch(0.72 0.18 162)`), used sparingly — brand badge, primary CTA, italic emphasis, "ok" log line, capability-map active node. Everything else is ink-on-dark.
+- **Typography:** display serif for the headline (1 line, italic accent on the verb-phrase), mono for everything else. No sans body text in the embed itself.
+- **Borders:** 1px dim lines between panels, 1px accent border around the hero frame, no rounded corners > 2px.
+- **Liveness signals:** pulsing live-dot on the manifest panel head, blinking cursor at end of log, accent-soft halo on active capability-map nodes.
+
+**What "parity" means here:**
+- ✅ Real components rendering the same six sections in the same arrangement
+- ✅ Real workspace data (real manifest, real intents/commands counts, real log)
+- ✅ Host's palette + fonts applied via `embed-context`
+- ✅ Roughly the same vertical density (within ~20%)
+- ❌ Pixel-perfect match to the mock — Hudson's components will look different, that's fine
+- ❌ Carrying over the mock's specific copy ("This page is built with itself.") — Hudson should pick its own hero copy
+
+The mock at `/embed/workspace` stays as the **fallback** when Hudson's deployment isn't reachable. Host code: `<HudsonEmbed src="/embed/workspace" surface="workspace" sizing={{ mode: 'fill' }} />` becomes `<HudsonEmbed src="https://hudsonos.com/embed/workspace" ... />` (or eventually the Hudson-app origin) once Hudson ships. One-line swap.
+
+### 13. Implementation Order
 
 Logo Designer as first artifact embed, as proposed:
 
