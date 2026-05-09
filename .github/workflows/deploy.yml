@@ -28,12 +28,11 @@ jobs:
         run: bun run build:site
 
       # wrangler refuses to bind a Worker custom_domain when the hostname has
-      # externally managed DNS records (leftover GH Pages A records on the apex,
-      # CNAMEs to github.io on www). Wrangler's auto-override path doesn't fire
-      # for this conflict class, so we clear known GH Pages-shaped records first.
-      # Idempotent — once the cutover lands and the Worker owns the routing,
-      # no matching records exist and this step is a no-op.
-      - name: Clear stale GH Pages DNS records
+      # externally managed DNS records. Worker custom_domain bindings don't use
+      # traditional DNS records (they live in a separate routing layer), so on
+      # the two hostnames we control here, any A/AAAA/CNAME is by definition
+      # stale and safe to delete. Once the Worker is bound, this step is a no-op.
+      - name: Clear stale DNS records on hudsonos.com / www.hudsonos.com
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
@@ -45,21 +44,19 @@ jobs:
             exit 1
           fi
           echo "Zone $ZONE"
-          # GH Pages A IPs (apex) + any CNAME pointing at *.github.io (www)
-          IP_RX='^185\.199\.10[89]\.153$|^185\.199\.11[01]\.153$'
-          CNAME_RX='\\.github\\.io$|^arach\\.github\\.io$'
           for HOST in hudsonos.com www.hudsonos.com; do
-            IDS=$(api "https://api.cloudflare.com/client/v4/zones/$ZONE/dns_records?name=$HOST" \
-              | jq -r --arg ip "$IP_RX" --arg cn "$CNAME_RX" '
-                  .result[]
-                  | select(
-                      (.type == "A" and (.content | test($ip))) or
-                      (.type == "CNAME" and (.content | test($cn)))
-                    )
-                  | "\(.id) \(.type) \(.content)"
-                ')
+            ALL=$(api "https://api.cloudflare.com/client/v4/zones/$ZONE/dns_records?name=$HOST" \
+              | jq -r '.result[] | "\(.type) \(.content) \(.id)"')
+            if [ -z "$ALL" ]; then
+              echo "$HOST: no records at all"
+              continue
+            fi
+            echo "$HOST: full record list:"
+            echo "$ALL" | sed 's/^/  /'
+            # Only A, AAAA, CNAME conflict with Worker custom_domain routing
+            IDS=$(echo "$ALL" | awk '$1=="A" || $1=="AAAA" || $1=="CNAME" {print $3, $1, $2}')
             if [ -z "$IDS" ]; then
-              echo "$HOST: no stale records to delete"
+              echo "$HOST: nothing to delete (only TXT/MX/etc present)"
               continue
             fi
             while IFS= read -r LINE; do
