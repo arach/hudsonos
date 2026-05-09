@@ -8,6 +8,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:site": "bun run build && bun site/export-pages.mjs",
+    "deploy": "bun run build:site && bunx wrangler deploy",
+    "upload": "bun run build:site && bunx wrangler versions upload",
     "start": "next start",
     "lint": "next lint",
     "og": "npx @arach/og og-template.html -o public/og.png --var 'tag=Multi-App Canvas Workspace' --var 'title=HUDSON' --var 'titleSize=88px' --var 'subtitle=Build apps with Provider + Slots + Hooks. Compose them into spatial workspaces.' && npx @arach/og og-releases-template.html -o public/og-releases.png --var 'pageTitle=Releases' --var 'subtitle=Download the latest version. Code-signed and notarized by Apple.' && npx @arach/og og-demo-template.html -o public/og-demo.png --var 'pageTitle=Demo' --var 'subtitle=See Hudson in action. A multi-app canvas workspace for React.'"
@@ -28,6 +31,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4"
   }
 }

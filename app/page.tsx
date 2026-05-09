@@ -1,9 +1,10 @@
 import { SiteRoot } from '@/SiteRoot';
-import { readStudioState } from '@/theme/cookie';
+import { DEFAULTS } from '@/theme/defaults';
 import { resolveThemeStyle } from '@/theme/resolve';
 
-export default async function Page() {
-  const state = await readStudioState();
-  const themeStyle = resolveThemeStyle(state);
-  return <SiteRoot themeStyle={themeStyle} initialState={state} />;
+// Static export: render with defaults at build time.
+// The StudioConsole rehydrates user preferences from localStorage/cookie on the client.
+export default function Page() {
+  const themeStyle = resolveThemeStyle({ ...DEFAULTS });
+  return <SiteRoot themeStyle={themeStyle} initialState={{ ...DEFAULTS }} />;
 }
