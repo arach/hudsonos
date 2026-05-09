@@ -27,6 +27,32 @@ jobs:
       - name: Build site (Next.js + docs merge)
         run: bun run build:site
 
+      # wrangler refuses to bind a Worker custom_domain when the hostname
+      # has externally managed DNS records (e.g. leftover GitHub Pages A
+      # records). Wrangler's auto-override path doesn't fire for this
+      # conflict class, so we clear any GH Pages A records first. Idempotent —
+      # a no-op once the cutover is complete and Worker is the owner.
+      - name: Clear stale GH Pages DNS records
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          api() { curl -fsSL -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$@"; }
+          ZONE=$(api "https://api.cloudflare.com/client/v4/zones?name=hudsonos.com" | jq -r '.result[0].id // empty')
+          if [ -z "$ZONE" ]; then
+            echo "::error::Could not look up Cloudflare zone for hudsonos.com — token likely lacks Zone:Read"
+            exit 1
+          fi
+          echo "Zone $ZONE"
+          for HOST in hudsonos.com www.hudsonos.com; do
+            IDS=$(api "https://api.cloudflare.com/client/v4/zones/$ZONE/dns_records?type=A&name=$HOST" \
+              | jq -r '.result[] | select(.content | test("^185\\.199\\.10[89]\\.153$|^185\\.199\\.11[01]\\.153$")) | .id')
+            for ID in $IDS; do
+              echo "Deleting GH Pages A record on $HOST (id=$ID)"
+              api -X DELETE "https://api.cloudflare.com/client/v4/zones/$ZONE/dns_records/$ID" > /dev/null
+            done
+          done
+
       - name: Deploy to Cloudflare Workers
         run: bunx wrangler deploy
         env:
