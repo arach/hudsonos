@@ -7,6 +7,10 @@ export interface ConsumerConfig {
   theme: EmbedTheme;
   template: string;
   defaultWorkspace: string;
+  /** App to focus when this consumer opens a workspace embed. */
+  defaultFocus?: string;
+  /** Optional subset/order of apps to show by default in workspace embeds. */
+  defaultApps?: string[];
   palette: Record<string, string>;
   fonts: Record<string, string>;
 }
@@ -31,6 +35,7 @@ export const consumers: Record<string, ConsumerConfig> = {
     theme: 'dark',
     template: 'hudson',
     defaultWorkspace: 'hudson-os',
+    defaultFocus: 'hudson-docs',
     palette: {
       '--hud-bg':           'oklch(0.145 0 0)',
       '--hud-bg-2':         'oklch(0.18 0 0)',
@@ -127,6 +132,7 @@ export const consumers: Record<string, ConsumerConfig> = {
     theme: 'dark',
     template: 'hudson',
     defaultWorkspace: 'hudson-os',
+    defaultFocus: 'hudson-docs',
     palette: {
       '--hud-bg':           'oklch(0.20 0.02 240)',
       '--hud-bg-2':         'oklch(0.24 0.02 240)',
