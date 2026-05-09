@@ -1,10 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import { Counter } from '@/lib/animate';
 import { HudsonEmbed } from '@/lib/embed';
 import { EmbedFrame } from '@/primitives/EmbedFrame';
 import { Eyebrow } from '@/primitives/Eyebrow';
 import { Sheet } from '@/primitives/Sheet';
+
+const INSTALL_CMD = 'bun add @hudsonos/sdk';
+const GITHUB_URL = 'https://github.com/arach/hudsonos';
 
 const STATS: Array<[string, string, string]> = [
   ['Surfaces', '3', 'iOS · macOS · Web'],
@@ -14,6 +18,21 @@ const STATS: Array<[string, string, string]> = [
 ];
 
 export function Sheet01Hero() {
+  const [copied, setCopied] = useState(false);
+
+  const handleInstallClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.__hudAudio?.chime?.({ cat: 'ui' });
+    try {
+      await navigator.clipboard.writeText(INSTALL_CMD);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    } catch {
+      // Clipboard blocked (insecure context, denied permission) — keep silent;
+      // the user can still select-and-copy the visible text.
+    }
+  };
+
   return (
     <Sheet
       id="hero"
@@ -46,16 +65,20 @@ export function Sheet01Hero() {
         </p>
 
         <div style={{ display: 'flex', gap: 12, marginBottom: 64 }}>
-          <a
+          <button
+            type="button"
             className="btn btn--accent"
-            href="#install"
-            onClick={() => window.__hudAudio?.chime?.({ cat: 'ui' })}
+            onClick={handleInstallClick}
+            aria-label={copied ? 'Install command copied to clipboard' : `Copy install command: ${INSTALL_CMD}`}
+            style={{ minWidth: 220 }}
           >
-            $ brew install hudson
-          </a>
+            {copied ? '✓ Copied to clipboard' : `$ ${INSTALL_CMD}`}
+          </button>
           <a
             className="btn btn--ghost"
-            href="#github"
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => window.__hudAudio?.tick?.({ cat: 'ui', gain: 0.08 })}
           >
             View source · GitHub
