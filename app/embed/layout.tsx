@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
-import "./embed.css";
+import type { Metadata } from 'next';
+import './embed.css';
 
 export const metadata: Metadata = {
-  title: "Hudson Embed",
+  title: 'Hudson Embed',
   robots: { index: false, follow: false },
 };
 

@@ -1,12 +1,7 @@
-/* ─────────────────────────────────────────────────────────────
-   Hudson Embed surfaces — the primitive's own stylesheet.
-   The page accepts --hud-* tokens via postMessage from the host
-   and falls back to its own dark-emerald defaults below.
-   ───────────────────────────────────────────────────────────── */
+/* Hudson Embed surfaces — server-rendered theme classes are the source of truth
+   for first paint. Consumers can still postMessage --hud-* tokens at runtime. */
 
 :root {
-  /* Embed-side tokens — written by hudson:theme-sync from the host.
-     Defaults below shape Hudson's "native" look (dark + emerald). */
   --hud-bg: oklch(0.16 0.005 240);
   --hud-bg-2: oklch(0.20 0.005 240);
   --hud-bg-3: oklch(0.24 0.005 240);
@@ -16,13 +11,111 @@
   --hud-ink-3: oklch(0.50 0.01 240);
   --hud-line: oklch(0.32 0.012 240);
   --hud-line-strong: oklch(0.48 0.012 240);
-  --hud-accent: oklch(0.72 0.18 162);          /* emerald */
+  --hud-accent: oklch(0.72 0.18 162);
   --hud-accent-soft: oklch(0.72 0.18 162 / 0.10);
   --hud-accent-line: oklch(0.72 0.18 162 / 0.45);
   --hud-border-width: 1px;
   --hud-font-display: var(--font-newsreader), 'Times New Roman', serif;
   --hud-font-body: var(--font-space-grotesk), system-ui, sans-serif;
   --hud-font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* Canonical hudson dark — pure-neutral grays + emerald.
+   Mirrors hudsonkit/styles/tokens.css [data-hudson-template="hudson"][data-hudson-theme="dark"]. */
+.embed-theme-hudson {
+  --hud-bg: oklch(0.145 0 0);
+  --hud-bg-2: oklch(0.18 0 0);
+  --hud-bg-3: oklch(0.24 0 0);
+  --hud-ink: oklch(0.95 0 0);
+  --hud-ink-1: oklch(0.85 0 0);
+  --hud-ink-2: oklch(0.64 0 0);
+  --hud-ink-3: oklch(0.50 0 0);
+  --hud-line: oklch(0.28 0 0);
+  --hud-line-strong: oklch(0.40 0 0);
+  --hud-accent: oklch(0.72 0.18 162);
+  --hud-accent-soft: oklch(0.72 0.18 162 / 0.10);
+  --hud-accent-line: oklch(0.72 0.18 162 / 0.45);
+  --hud-border-width: 1px;
+  --hud-font-display: var(--font-newsreader), 'Times New Roman', serif;
+  --hud-font-body: var(--font-space-grotesk), system-ui, sans-serif;
+  --hud-font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* hudson light — warm off-white canvas, cool ink, pushed emerald. */
+.embed-theme-hudson-light {
+  --hud-bg: oklch(0.975 0.008 90);
+  --hud-bg-2: oklch(1 0 0);
+  --hud-bg-3: oklch(0.945 0.012 85);
+  --hud-ink: oklch(0.21 0.02 260);
+  --hud-ink-1: oklch(0.32 0.02 260);
+  --hud-ink-2: oklch(0.50 0.02 260);
+  --hud-ink-3: oklch(0.66 0.015 260);
+  --hud-line: oklch(0.88 0.012 85);
+  --hud-line-strong: oklch(0.74 0.014 85);
+  --hud-accent: oklch(0.58 0.19 162);
+  --hud-accent-soft: oklch(0.58 0.19 162 / 0.08);
+  --hud-accent-line: oklch(0.58 0.19 162 / 0.40);
+  --hud-border-width: 1px;
+  --hud-font-display: var(--font-newsreader), 'Times New Roman', serif;
+  --hud-font-body: var(--font-space-grotesk), system-ui, sans-serif;
+  --hud-font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* editorial dark — warm earth tones + dusty orange. */
+.embed-theme-editorial-dark {
+  --hud-bg: oklch(0.21 0.015 60);
+  --hud-bg-2: oklch(0.245 0.016 60);
+  --hud-bg-3: oklch(0.29 0.015 65);
+  --hud-ink: oklch(0.92 0.01 85);
+  --hud-ink-1: oklch(0.82 0.01 80);
+  --hud-ink-2: oklch(0.71 0.012 75);
+  --hud-ink-3: oklch(0.55 0.014 70);
+  --hud-line: oklch(0.34 0.015 65);
+  --hud-line-strong: oklch(0.46 0.014 65);
+  --hud-accent: oklch(0.69 0.16 40);
+  --hud-accent-soft: oklch(0.69 0.16 40 / 0.10);
+  --hud-accent-line: oklch(0.69 0.16 40 / 0.45);
+  --hud-border-width: 1px;
+  --hud-font-display: var(--font-bodoni-moda), 'Times New Roman', serif;
+  --hud-font-body: var(--font-spectral), Georgia, serif;
+  --hud-font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* editorial light — paper-warm canvas + dusty orange. */
+.embed-theme-editorial-light {
+  --hud-bg: oklch(0.98 0.01 80);
+  --hud-bg-2: oklch(1 0 0);
+  --hud-bg-3: oklch(0.94 0.02 80);
+  --hud-ink: oklch(0.20 0.02 60);
+  --hud-ink-1: oklch(0.32 0.02 60);
+  --hud-ink-2: oklch(0.48 0.03 60);
+  --hud-ink-3: oklch(0.66 0.022 60);
+  --hud-line: oklch(0.88 0.015 80);
+  --hud-line-strong: oklch(0.74 0.018 80);
+  --hud-accent: oklch(0.60 0.18 40);
+  --hud-accent-soft: oklch(0.60 0.18 40 / 0.08);
+  --hud-accent-line: oklch(0.60 0.18 40 / 0.40);
+  --hud-border-width: 1px;
+  --hud-font-display: var(--font-bodoni-moda), 'Times New Roman', serif;
+  --hud-font-body: var(--font-spectral), Georgia, serif;
+  --hud-font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* hudsonos — slate paper + amber accent (consumer hudsonos site). */
+.embed-theme-hudsonos {
+  --hud-bg: oklch(0.20 0.02 240);
+  --hud-bg-2: oklch(0.24 0.02 240);
+  --hud-bg-3: oklch(0.28 0.02 240);
+  --hud-ink: oklch(0.94 0.005 240);
+  --hud-ink-1: oklch(0.85 0.005 240);
+  --hud-ink-2: oklch(0.70 0.008 240);
+  --hud-ink-3: oklch(0.55 0.01 240);
+  --hud-line: oklch(0.40 0.012 240);
+  --hud-line-strong: oklch(0.62 0.012 240);
+  --hud-accent: oklch(0.72 0.18 60);
+  --hud-accent-soft: oklch(0.72 0.18 60 / 0.12);
+  --hud-accent-line: oklch(0.72 0.18 60 / 0.45);
+  --hud-border-width: 1.5px;
 }
 
 html, body {
@@ -36,8 +129,6 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Workspace embed ─── */
-
 .workspace {
   display: grid;
   grid-template-rows: auto 1fr auto auto;
@@ -45,7 +136,6 @@ html, body {
   background: var(--hud-bg);
 }
 
-/* Top bar */
 .workspace__top {
   display: flex;
   align-items: center;
@@ -90,7 +180,6 @@ html, body {
   cursor: pointer;
 }
 
-/* Body — three columns */
 .workspace__body {
   display: grid;
   grid-template-columns: 240px 1fr 260px;
@@ -161,7 +250,6 @@ html, body {
   border-radius: 2px;
 }
 
-/* Center hero */
 .workspace__hero {
   padding: 16px;
   display: flex;
@@ -243,7 +331,6 @@ html, body {
   font-weight: 600;
 }
 
-/* Right inspector */
 .workspace__capmap {
   display: flex;
   flex-direction: column;
@@ -296,7 +383,6 @@ html, body {
 }
 @keyframes workspace-blink { 50% { opacity: 0; } }
 
-/* Build strip */
 .workspace__build {
   border-top: 1px solid var(--hud-line);
   background: var(--hud-bg-2);
@@ -364,10 +450,9 @@ html, body {
   overflow-x: auto;
 }
 .workspace__step-code .kw { color: var(--hud-accent); }
-.workspace__step-code .str { color: oklch(0.78 0.13 50); }
-.workspace__step-code .num { color: oklch(0.78 0.16 75); }
+.workspace__step-code .str { color: var(--hud-syntax-str, var(--hud-accent)); }
+.workspace__step-code .num { color: var(--hud-syntax-num, oklch(0.78 0.16 75)); }
 
-/* Footer enumeration strip */
 .workspace__legend {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
