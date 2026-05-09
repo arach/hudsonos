@@ -1,64 +1,97 @@
-import type { Metadata } from "next";
-import { Geist_Mono, Jura } from "next/font/google";
-import Script from "next/script";
-import "./globals.css";
+import type { Metadata } from 'next';
+import {
+  Geist,
+  Geist_Mono,
+  Jura,
+  Space_Grotesk,
+  JetBrains_Mono,
+  Newsreader,
+  Bodoni_Moda,
+  Spectral,
+  Cormorant_Garamond,
+  IBM_Plex_Sans,
+  IBM_Plex_Mono,
+} from 'next/font/google';
+import '@/styles/site.css';
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const geist = Geist({ subsets: ['latin'], display: 'swap', variable: '--font-geist' });
+const geistMono = Geist_Mono({ subsets: ['latin'], display: 'swap', variable: '--font-geist-mono' });
+const jura = Jura({ subsets: ['latin'], display: 'swap', variable: '--font-jura' });
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-space-grotesk',
 });
-
-// Brand typeface — Jura. Chosen over Astro Mono (unlicensed) during the Hudson landing rebuild.
-const jura = Jura({
-  variable: "--font-jura",
-  subsets: ["latin"],
-  display: "swap",
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-jetbrains-mono',
+});
+const newsreader = Newsreader({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-newsreader',
+  style: ['normal', 'italic'],
+  axes: ['opsz'],
+});
+const bodoniModa = Bodoni_Moda({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-bodoni-moda',
+  style: ['normal', 'italic'],
+});
+const spectral = Spectral({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-spectral',
+  style: ['normal', 'italic'],
+  weight: ['400', '500', '600'],
+});
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-cormorant',
+  style: ['normal', 'italic'],
+  weight: ['400', '500', '600'],
+});
+const plexSans = IBM_Plex_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-plex-sans',
+  weight: ['300', '400', '500', '600', '700'],
+});
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-plex-mono',
+  weight: ['400', '500', '600'],
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://hudsonos.com"),
-  title: "Hudson — Multi-app canvas workspace for AI apps",
-  description:
-    "Build apps with Provider + Slots + Hooks. Compose them into spatial workspaces with pan, zoom, and windowing.",
-  openGraph: {
-    title: "Hudson — Multi-app canvas workspace for AI apps",
-    description:
-      "Build apps with Provider + Slots + Hooks. Compose them into spatial workspaces with pan, zoom, and windowing.",
-    images: [{ url: "/og.png", width: 1200, height: 630 }],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Hudson — Multi-app canvas workspace for AI apps",
-    description:
-      "Build apps with Provider + Slots + Hooks. Compose them into spatial workspaces with pan, zoom, and windowing.",
-    images: ["/og.png"],
-  },
+  title: 'Hudson — workspace framework, drawn to spec',
+  description: 'HudsonKit. Open-source workspace framework. Drawn to spec.',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const fontVars = [
+  geist.variable,
+  geistMono.variable,
+  jura.variable,
+  spaceGrotesk.variable,
+  jetbrainsMono.variable,
+  newsreader.variable,
+  bodoniModa.variable,
+  spectral.variable,
+  cormorant.variable,
+  plexSans.variable,
+  plexMono.variable,
+].join(' ');
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${jura.variable} ${geistMono.variable}`}
-    >
-      <head>
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-GSHDZPFRZG"
-          strategy="afterInteractive"
-        />
-        <Script id="gtag-init" strategy="afterInteractive">
-          {`window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-GSHDZPFRZG');`}
-        </Script>
-      </head>
-      <body className="antialiased">{children}</body>
+    <html lang="en" className={fontVars}>
+      <body style={{ margin: 0 }}>
+        {children}
+      </body>
     </html>
   );
 }
