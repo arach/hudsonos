@@ -68,7 +68,14 @@ export function StudioConsole() {
     window.__hudAudio?.setCategory?.('type', state.audioType);
     window.__hudAudio?.setCategory?.('page', state.audioPage);
 
-    if (hydrated) writeStudioCookie(state);
+    if (hydrated) {
+      // The theme-boot script in <head> injects a !important style rule for
+      // first-paint correctness; once we're hydrated and applying inline
+      // element styles ourselves, strip it so Studio Console toggles take effect.
+      const boot = document.getElementById('hudson-theme-boot');
+      if (boot) boot.remove();
+      writeStudioCookie(state);
+    }
   }, [state, hydrated]);
 
   function applyPreset(preset: Preset) {
