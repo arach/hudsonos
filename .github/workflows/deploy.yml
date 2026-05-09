@@ -28,15 +28,15 @@ jobs:
         run: bun run build:site
 
       # wrangler refuses to bind a Worker custom_domain when the hostname has
-      # externally managed DNS records. Worker custom_domain bindings don't use
-      # traditional DNS records (they live in a separate routing layer), so on
-      # the two hostnames we control here, any A/AAAA/CNAME is by definition
-      # stale and safe to delete. Once the Worker is bound, this step is a no-op.
+      # externally managed DNS records. Worker bindings appear in DNS as a
+      # placeholder AAAA (100::) or A (192.0.2.0/24) record — we keep those
+      # and only clear "real" external records. Once the Worker is fully bound,
+      # only the placeholders remain and this step becomes a no-op.
       - name: Clear stale DNS records on hudsonos.com / www.hudsonos.com
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
-          set -euo pipefail
+          set -uo pipefail
           api() { curl -fsSL -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$@"; }
           ZONE=$(api "https://api.cloudflare.com/client/v4/zones?name=hudsonos.com" | jq -r '.result[0].id // empty')
           if [ -z "$ZONE" ]; then
@@ -45,25 +45,32 @@ jobs:
           fi
           echo "Zone $ZONE"
           for HOST in hudsonos.com www.hudsonos.com; do
-            ALL=$(api "https://api.cloudflare.com/client/v4/zones/$ZONE/dns_records?name=$HOST" \
-              | jq -r '.result[] | "\(.type) \(.content) \(.id)"')
+            BODY=$(api "https://api.cloudflare.com/client/v4/zones/$ZONE/dns_records?name=$HOST")
+            ALL=$(echo "$BODY" | jq -r '.result[] | "\(.type)|\(.content)|\(.id)"')
             if [ -z "$ALL" ]; then
               echo "$HOST: no records at all"
               continue
             fi
             echo "$HOST: full record list:"
             echo "$ALL" | sed 's/^/  /'
-            # Only A, AAAA, CNAME conflict with Worker custom_domain routing
-            IDS=$(echo "$ALL" | awk '$1=="A" || $1=="AAAA" || $1=="CNAME" {print $3, $1, $2}')
+            # Skip Worker-owned placeholders (100:: AAAA, 192.0.2.x A) — those
+            # ARE the Worker binding and deleting them returns 400. Skip TXT/MX/SOA.
+            IDS=$(echo "$ALL" | awk -F'|' '
+              ($1=="A" && $2 !~ /^192\.0\.2\./) ||
+              ($1=="AAAA" && $2 != "100::") ||
+              ($1=="CNAME") { printf "%s %s %s\n", $3, $1, $2 }
+            ')
             if [ -z "$IDS" ]; then
-              echo "$HOST: nothing to delete (only TXT/MX/etc present)"
+              echo "$HOST: nothing to delete (Worker already bound or only TXT/MX/etc)"
               continue
             fi
             while IFS= read -r LINE; do
               ID=$(echo "$LINE" | awk '{print $1}')
               REST=$(echo "$LINE" | cut -d' ' -f2-)
               echo "Deleting $REST on $HOST (id=$ID)"
-              api -X DELETE "https://api.cloudflare.com/client/v4/zones/$ZONE/dns_records/$ID" > /dev/null
+              if ! api -X DELETE "https://api.cloudflare.com/client/v4/zones/$ZONE/dns_records/$ID" > /dev/null; then
+                echo "  warning: delete failed (record may be Worker-managed); continuing"
+              fi
             done <<< "$IDS"
           done
 
