@@ -1,7 +1,9 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import type { PlotterAccent } from './PlotterCanvas';
+
+const LIVE_REPLOT_DELAY_MS = 320;
 
 export type PlotterControlsProps = {
   draftPhrase: string;
@@ -44,6 +46,23 @@ export function PlotterControls({
   done,
   presets,
 }: PlotterControlsProps) {
+  // Debounced live replot — type a character, deck commits to the canvas after
+  // ~320ms idle. Replaces the old "click REPLOT or hit ⏎" friction. Enter and
+  // blur still flush immediately for keyboard users.
+  const liveReplotRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const flushLive = (v: string) => {
+    if (liveReplotRef.current) clearTimeout(liveReplotRef.current);
+    liveReplotRef.current = null;
+    commit(v);
+  };
+  const scheduleLive = (v: string) => {
+    if (liveReplotRef.current) clearTimeout(liveReplotRef.current);
+    liveReplotRef.current = setTimeout(() => commit(v), LIVE_REPLOT_DELAY_MS);
+  };
+  useEffect(() => () => {
+    if (liveReplotRef.current) clearTimeout(liveReplotRef.current);
+  }, []);
+
   return (
     <aside
       style={{
@@ -54,7 +73,9 @@ export function PlotterControls({
         flexDirection: 'column',
         gap: 18,
         position: 'sticky',
-        top: 24,
+        // Clear the sticky sheet header (--sheet-header-h ≈ 96px) so the deck
+        // doesn't slide underneath when the user scrolls within the plotter.
+        top: 'calc(var(--sheet-header-h, 96px) + 16px)',
       }}
     >
       <div
@@ -95,11 +116,15 @@ export function PlotterControls({
         <input
           value={draftPhrase}
           maxLength={cap}
-          onChange={(e) => setDraftPhrase(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') commit(e.currentTarget.value);
+          onChange={(e) => {
+            const v = e.target.value;
+            setDraftPhrase(v);
+            scheduleLive(v);
           }}
-          onBlur={(e) => commit(e.currentTarget.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') flushLive(e.currentTarget.value);
+          }}
+          onBlur={(e) => flushLive(e.currentTarget.value)}
           style={{
             width: '100%',
             boxSizing: 'border-box',
@@ -118,20 +143,12 @@ export function PlotterControls({
           {presets.map((p) => (
             <button
               key={p}
+              type="button"
+              className="plotter-chip"
+              aria-pressed={p === draftPhrase}
               onClick={() => {
                 setDraftPhrase(p);
-                commit(p);
-              }}
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 9,
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                padding: '4px 8px',
-                background: 'var(--paper)',
-                border: '1px solid var(--line-strong)',
-                color: 'var(--ink-1)',
-                cursor: 'pointer',
+                flushLive(p);
               }}
             >
               {p}
@@ -196,25 +213,20 @@ export function PlotterControls({
       </CtlGroup>
 
       <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
-        <button className="btn btn--ghost" style={{ flex: 1 }} onClick={replot}>
+        <button type="button" className="btn btn--ghost" style={{ flex: 1 }} onClick={replot}>
           ↻ Replot
         </button>
-        <button className="btn btn--accent" style={{ flex: 1 }} disabled={!done} onClick={downloadSVG}>
-          ↓ Save SVG
+        <button
+          type="button"
+          className="btn btn--accent"
+          style={{ flex: 1 }}
+          disabled={!done}
+          aria-disabled={!done}
+          title={done ? 'Download as SVG' : 'Available when the plot completes'}
+          onClick={done ? downloadSVG : undefined}
+        >
+          {done ? '↓ Save SVG' : '· Drawing…'}
         </button>
-      </div>
-      <div
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 9,
-          letterSpacing: '0.16em',
-          textTransform: 'uppercase',
-          color: 'var(--ink-2)',
-          borderTop: '1px dashed var(--line-strong)',
-          paddingTop: 10,
-        }}
-      >
-        Tip · press <span className="kbd" style={{ fontSize: 10 }}>⏎</span> in the phrase to replot.
       </div>
     </aside>
   );
