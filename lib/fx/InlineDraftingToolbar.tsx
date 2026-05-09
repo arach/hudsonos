@@ -121,10 +121,10 @@ export function InlineDraftingToolbar({ className, style }: InlineDraftingToolba
         className={'drafting-tools__trigger' + (open ? ' is-open' : '') + (activeCount > 0 ? ' has-active' : '')}
         aria-expanded={open}
         aria-haspopup="true"
-        title="Studio"
+        title="Instruments — drafting overlays"
       >
         <span className="drafting-tools__chev" aria-hidden="true">⌗</span>
-        <span className="drafting-tools__label">Studio</span>
+        <span className="drafting-tools__label">Instruments</span>
         {activeCount > 0 && <span className="drafting-tools__count">{activeCount}</span>}
       </button>
 
