@@ -31,7 +31,7 @@ function writeStudioCookie(state: StudioState) {
 
 export function StudioConsole() {
   const [open, setOpen] = useState(false);
-  const { state, setState, set, reset } = useStudio();
+  const { state, setState, set, reset, hydrated } = useStudio();
 
   useEffect(() => {
     const root = document.querySelector<HTMLElement>('.hudson-site');
@@ -68,8 +68,8 @@ export function StudioConsole() {
     window.__hudAudio?.setCategory?.('type', state.audioType);
     window.__hudAudio?.setCategory?.('page', state.audioPage);
 
-    writeStudioCookie(state);
-  }, [state]);
+    if (hydrated) writeStudioCookie(state);
+  }, [state, hydrated]);
 
   function applyPreset(preset: Preset) {
     setState(preset.patch);
