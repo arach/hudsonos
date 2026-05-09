@@ -170,14 +170,19 @@ function buildDimensions(bbox: Bbox): Dim[] {
   const cx = bbox.x + bbox.w * 0.18;
   const cy = bbox.y + bbox.h * 0.5;
   const lx = bbox.x + bbox.w + 70;
+  // Drop the leader well below the text bottom so the horizontal callout sits
+  // cleanly in the open margin between the drafted phrase and the title block.
+  // Long diagonal (kink at cx + 64) keeps the slope reading as a draftsman's
+  // dimension rather than a stub off the glyph.
+  const ly = bbox.y + bbox.h + 56;
   dims.push({
     kind: 'leader',
-    d: `M${cx} ${cy} L${cx + 30} ${cy + 24} L${lx} ${cy + 24}`,
+    d: `M${cx} ${cy} L${cx + 64} ${ly} L${lx} ${ly}`,
   });
   dims.push({
     kind: 'leader-label',
     x: lx,
-    y: cy + 18,
+    y: ly - 6,
     text: 'STROKE: 0.30 mm · ISO 3098',
     anchor: 'end',
   });
