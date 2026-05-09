@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hudsonos",
+  "account_id": "7f500c31ebdac9ae0271933b83f09722",
+  "main": "cloudflare-static-worker.ts",
+  "compatibility_date": "2026-04-30",
+  "assets": {
+    "directory": "site/out",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "routes": [
+    {
+      "pattern": "hudsonos.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.hudsonos.com",
+      "custom_domain": true
+    }
+  ]
+}

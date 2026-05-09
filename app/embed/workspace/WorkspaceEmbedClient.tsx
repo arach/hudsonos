@@ -1,6 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { decodeThemeForEmbed, inlineThemeStyle } from '@/lib/embed-theme';
+import { consumerClassName } from '../registry';
 
 const ALLOWED_ORIGINS = (() => {
   const list = new Set<string>();
@@ -48,9 +51,26 @@ interface WorkspaceEmbedClientProps {
 }
 
 export default function WorkspaceEmbedClient({
-  themeClassName,
-  themeStyle,
+  themeClassName: themeClassNameProp,
+  themeStyle: themeStyleProp,
 }: WorkspaceEmbedClientProps) {
+  const searchParams = useSearchParams();
+
+  // Resolve theme from URL params client-side (static export path)
+  let themeStyle = themeStyleProp;
+  let themeClassName = themeClassNameProp;
+  if (!themeStyle) {
+    const palette = searchParams.get('palette');
+    if (palette) {
+      const decoded = decodeThemeForEmbed(palette);
+      if (decoded) themeStyle = inlineThemeStyle(decoded) as React.CSSProperties;
+    }
+  }
+  if (!themeStyle && !themeClassName) {
+    const ref = searchParams.get('ref');
+    themeClassName = consumerClassName(ref ?? undefined);
+  }
+
   const sentReady = useRef(false);
   const [uptimeSec, setUptimeSec] = useState(3);
   const [logTail, setLogTail] = useState<Array<{ ts: string; kw: string; text: string }>>([]);
