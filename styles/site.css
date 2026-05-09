@@ -665,7 +665,9 @@
   margin-right: -64px;
 }
 
-/* Tick ruler — sits above the bar, on the section's paper, not inside the bar */
+/* Tick ruler — sits above the bar, on the section's paper, not inside the bar.
+   Solid paper background so scrolled content doesn't bleed through the empty
+   space between ticks while the sticky header is overlapping a section seam. */
 .hudson-site .sheet-header__rule {
   height: 16px;
   border-bottom: 1px solid var(--line);
@@ -675,7 +677,8 @@
       var(--ink-2) 11px, var(--ink-2) 12px) bottom / 100% 4px no-repeat,
     repeating-linear-gradient(to right,
       transparent 0, transparent 71px,
-      var(--ink) 71px, var(--ink) 72px) bottom / 100% 8px no-repeat;
+      var(--ink) 71px, var(--ink) 72px) bottom / 100% 8px no-repeat,
+    var(--paper);
 }
 
 /* Bar — three-column grid: wordmark | title block | studio button */
