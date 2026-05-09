@@ -1,4 +1,4 @@
-import { PlotterReveal, ToolShelf } from '@/lib/fx';
+import { PlotterReveal } from '@/lib/fx';
 import { EmbedFrame } from '@/primitives/EmbedFrame';
 import { Eyebrow } from '@/primitives/Eyebrow';
 import { Sheet } from '@/primitives/Sheet';
@@ -77,7 +77,6 @@ export function Sheet03Voice() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-            <ToolShelf note="Try the toolkit on this sheet" />
             <div className="spec" data-cal data-cal-label="signal-flow spec">
               <div className="spec__row spec__row--header">
                 <div>Stage</div>

@@ -123,7 +123,15 @@ export function InlineDraftingToolbar({ className, style }: InlineDraftingToolba
         aria-haspopup="true"
         title="Instruments — drafting overlays"
       >
-        <span className="drafting-tools__chev" aria-hidden="true">⌗</span>
+        <span className="drafting-tools__chev" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <rect x="2" y="2" width="10" height="10" stroke="currentColor" strokeWidth="1" />
+            <line x1="7" y1="4" x2="7" y2="10" stroke="currentColor" strokeWidth="1" />
+            <line x1="4" y1="7" x2="10" y2="7" stroke="currentColor" strokeWidth="1" />
+            <line x1="0" y1="2" x2="2" y2="2" stroke="currentColor" strokeWidth="1" />
+            <line x1="2" y1="0" x2="2" y2="2" stroke="currentColor" strokeWidth="1" />
+          </svg>
+        </span>
         <span className="drafting-tools__label">Instruments</span>
         {activeCount > 0 && <span className="drafting-tools__count">{activeCount}</span>}
       </button>
