@@ -161,7 +161,7 @@ export function Sheet01Hero() {
 
           <EmbedFrame height={720}>
             <HudsonEmbed
-              src={process.env.NEXT_PUBLIC_HUDSON_EMBED_SRC || '/embed/workspace'}
+              src={process.env.NEXT_PUBLIC_HUDSON_EMBED_SRC || 'https://app.hudsonos.com/embed/hudson/workspace'}
               surface="workspace"
               sizing={{ mode: 'fill' }}
               density="comfy"
